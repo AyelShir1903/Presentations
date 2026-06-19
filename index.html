@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy at Echelon, Business Solutions Group</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FFFFFF; --paper-2:#FAFAFB; --card:#FFFFFF;
+  --ink:#1B2540; --ink-2:#002060; --muted:#54607A; --faint:#8B93A4;
+  --accent:#B97800; --accent-soft:#D89A2E; --accent-ink:#8A5A00;
+  --line:#E3E6EC; --line-cool:#D9DFE9;
+  --tint-amber:#FBE5D7; --tint-blue:#EAEEF6;
+  --good:#1C7A4B; --good-tint:#E9F5EF; --good-line:#CBE7D7;
+  --sans:'Archivo',-apple-system,BlinkMacSystemFont,sans-serif;
+  --mono:'JetBrains Mono','SFMono-Regular',Menlo,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#E7E9EE;font-family:var(--sans);color:var(--ink);
+  display:flex;align-items:center;justify-content:center;overflow:hidden}
+.wrap{position:relative}
+.stage{width:1280px;height:720px;background:var(--paper);position:relative;overflow:hidden;
+  transform-origin:center center;box-shadow:0 40px 120px rgba(16,36,63,.28);border-radius:4px}
+
+/* logo on every page */
+.logo{position:absolute;bottom:16px;right:52px;width:96px;height:30px;
+  background-image:url('data:image/png;base64,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');
+  background-repeat:no-repeat;background-position:right center;background-size:contain;
+  opacity:.96;z-index:5;pointer-events:none}
+
+/* slides */
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;
+  padding:54px 64px 0;opacity:0;visibility:hidden;transition:opacity .35s ease}
+.slide.active{opacity:1;visibility:visible}
+.body{flex:1;min-height:0;display:flex;flex-direction:column}
+
+.eyebrow{font-family:var(--mono);font-size:15px;font-weight:600;letter-spacing:.12em;color:var(--accent)}
+.h2{font-size:46px;line-height:1.05;font-weight:800;letter-spacing:-.02em;color:var(--ink-2);margin-top:14px}
+.lead{font-size:22px;line-height:1.45;color:var(--muted);margin-top:14px;max-width:960px;font-weight:400}
+
+/* footer (injected): brand + page number only */
+.foot{display:flex;align-items:center;justify-content:flex-start;gap:12px;
+  padding:16px 0 18px;margin-top:10px;border-top:1px solid var(--line)}
+.f-brand{font-family:var(--mono);font-size:13.5px;font-weight:600;letter-spacing:.04em;color:var(--ink-2)}
+.f-num{font-family:var(--mono);font-size:13.5px;color:var(--muted)}
+.f-sep{font-family:var(--mono);font-size:13px;color:var(--faint)}
+
+/* chrome */
+.nav{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:14px;z-index:50}
+.nav button{font-family:var(--mono);font-size:15px;width:40px;height:40px;border-radius:11px;
+  border:1px solid var(--line);background:rgba(255,255,255,.85);color:var(--ink-2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:.15s;backdrop-filter:blur(6px)}
+.nav button:hover{border-color:var(--accent);color:var(--accent)}
+.nav .count{font-family:var(--mono);font-size:13px;color:#6b7689;min-width:64px;text-align:center}
+.progress{position:fixed;left:0;bottom:0;height:3px;width:100%;background:rgba(22,36,63,.08);z-index:50}
+.progress .bar{height:100%;width:0;background:var(--accent);transition:width .35s ease}
+
+/* shared atoms */
+.tap{cursor:pointer;color:var(--ink-2);background:rgba(185,120,0,.10);
+  border-bottom:2px dashed var(--accent);border-radius:4px;padding:1px 5px;font-weight:600;transition:.12s;white-space:nowrap}
+.tap:hover{background:rgba(185,120,0,.20)}
+.tap.on{background:var(--accent);color:#fff;border-bottom-color:transparent}
+.tag{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.06em;vertical-align:super;margin-left:5px;opacity:.95}
+.hint{font-family:var(--mono);font-size:15.5px;font-weight:600;color:var(--accent)}
+.fill{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center}
+.mono{font-family:var(--mono)}
+
+/* 01 cover */
+.cover .body{justify-content:center;position:relative}
+.cover .brandline{font-family:var(--mono);font-size:16px;font-weight:600;letter-spacing:.14em;color:var(--accent)}
+.cover h1{font-size:112px;line-height:.92;font-weight:800;letter-spacing:-.035em;margin-top:26px;color:var(--ink-2)}
+.cover .sub{font-size:27px;line-height:1.4;color:var(--muted);margin-top:28px;max-width:860px}
+.cover .present{font-family:var(--mono);font-size:16px;letter-spacing:.04em;color:var(--ink-2);margin-top:24px}
+.cover .chips{display:flex;gap:11px;margin-top:34px}
+.cover .chips .pill{display:inline-flex;align-items:center;font-family:var(--mono);font-size:13px;font-weight:600;border-radius:999px;padding:9px 16px;border:1px solid var(--line-cool);color:var(--ink-2);background:#fff}
+.cover .chips .pill.ai{border-color:rgba(185,120,0,.5);color:var(--accent);background:var(--tint-amber)}
+.watermark{position:absolute;right:-26px;top:6px;width:300px;height:300px;opacity:.06;color:var(--accent);pointer-events:none}
+
+/* 02 wager */
+.toggle{display:inline-flex;gap:6px;padding:5px;background:#EBE9E1;border:1px solid var(--line);border-radius:13px}
+.toggle .seg{font-family:var(--sans);cursor:pointer;border:none;background:transparent;font-size:16px;font-weight:700;padding:11px 19px;border-radius:9px;color:#7C8699;transition:.16s}
+.toggle .seg.on{background:var(--ink-2);color:#fff}
+.wager-grid{display:grid;grid-template-columns:1fr 1.05fr;gap:34px;align-items:center;margin-top:26px;flex:1}
+.rule-stack{display:flex;flex-direction:column;gap:12px}
+.rule-row{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:17px 20px}
+.rule-row .k{font-family:var(--mono);font-size:16px;font-weight:700;color:var(--accent);min-width:100px}
+.rule-row .v{font-size:18px;color:var(--ink)}
+.verdict-card{background:var(--tint-blue);border:1px solid var(--line-cool);border-radius:18px;padding:32px 34px}
+.verdict-card.one{background:var(--good-tint);border-color:var(--good-line)}
+.vc-tag{font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--accent)}
+.verdict-card.one .vc-tag{color:var(--good)}
+.vc-h{font-size:33px;font-weight:800;color:var(--ink-2);margin:11px 0 15px;letter-spacing:-.01em}
+.vc-list{display:flex;flex-direction:column;gap:11px}
+.vc-li{font-size:18px;color:#3C4A63;display:flex;gap:9px;align-items:flex-start;line-height:1.35}
+.vc-li b{color:var(--ink-2)}
+
+/* 03 personal info */
+.pi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-top:6px}
+.chip{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 18px;font-size:18px;font-weight:600;color:var(--ink-2);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.chip .s{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--accent);background:var(--tint-amber);border-radius:6px;padding:3px 7px}
+.chip.sensitive{border-color:rgba(185,120,0,.45)}
+.reident{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 24px;display:flex;align-items:center;gap:22px}
+.ri-chips{display:flex;gap:11px}
+.ri-chip{font-family:var(--mono);font-size:15px;font-weight:600;cursor:pointer;border:1.5px dashed var(--accent);background:rgba(185,120,0,.08);color:var(--ink-2);border-radius:10px;padding:13px 16px;transition:.14s}
+.ri-chip:hover{background:rgba(185,120,0,.16)}
+.ri-chip.on{background:var(--accent);color:#fff;border-style:solid}
+.ri-read{margin-left:auto;text-align:right}
+.ri-num{font-size:42px;font-weight:800;color:var(--accent);letter-spacing:-.02em;line-height:1}
+.ri-num.solved{color:var(--good)}
+.ri-cap{font-size:16px;color:var(--muted);margin-top:7px;max-width:250px;line-height:1.35}
+
+/* 04 two reflexes */
+.reflex-row{display:flex;gap:16px;margin-top:4px}
+.reflex{flex:1;background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px 26px}
+.reflex .q{font-size:27px;font-weight:800;color:var(--ink-2);letter-spacing:-.01em}
+.reflex .m{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.05em;color:var(--accent);margin-top:9px}
+.reflex .d{font-size:17px;color:var(--muted);margin-top:9px;line-height:1.4}
+.drift{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 24px;margin-top:16px}
+.drift-lbl{font-family:var(--mono);font-size:14px;font-weight:600;letter-spacing:.04em;color:var(--accent);margin-bottom:13px}
+.drift-steps{display:flex;align-items:center;gap:7px}
+.drift-steps .arrow{color:#BCC6D6;font-family:var(--mono);font-size:19px}
+.drift-step{flex:1;cursor:pointer;text-align:center;font-size:17px;font-weight:600;color:var(--ink-2);
+  background:#fff;border:1.5px solid var(--line);border-radius:11px;padding:13px 8px;transition:.15s}
+.drift-step.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.drift-panel{display:flex;gap:22px;align-items:center;margin-top:16px;background:var(--tint-blue);border:1px solid var(--line-cool);border-radius:13px;padding:20px 24px;min-height:100px}
+.drift-panel.ok{background:var(--good-tint);border-color:var(--good-line)}
+.drift-panel.bad{background:var(--tint-amber);border-color:rgba(185,120,0,.35)}
+.dp-meter{flex:0 0 140px}
+.dp-meter .lab{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.05em;color:var(--muted);margin-bottom:7px}
+.dp-bar{height:10px;border-radius:99px;background:#E2E6EE;overflow:hidden}
+.dp-bar i{display:block;height:100%;background:var(--good);transition:width .3s,background .3s}
+.dp-txt .reflex-line{font-size:21px;font-weight:700;color:var(--ink-2)}
+.dp-txt .rule-line{font-family:var(--mono);font-size:15px;font-weight:600;color:var(--accent);margin-top:5px}
+
+/* 05 spot the trap */
+.trap-wrap{display:grid;grid-template-columns:1.25fr 1fr;gap:28px;margin-top:6px;flex:1;align-items:center}
+.memo{background:#fff;border:1px solid var(--line);border-radius:16px;padding:30px 34px;font-size:24px;line-height:1.95;color:var(--ink)}
+.memo .label{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.04em;color:var(--faint);margin-bottom:18px}
+.trap-side .counter{font-family:var(--mono);font-size:16px;font-weight:600;color:var(--accent);margin-bottom:13px}
+.trap-list{display:flex;flex-direction:column;gap:11px}
+.trap-item{background:#fff;border:1px solid var(--line);border-radius:12px;padding:15px 18px;opacity:.45;transition:.2s}
+.trap-item.found{opacity:1;border-color:rgba(185,120,0,.4)}
+.trap-item .tn{font-size:19px;font-weight:700;color:var(--ink-2)}
+.trap-item .tn .nm{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--accent);background:var(--tint-amber);border-radius:5px;padding:2px 7px;margin-left:8px;letter-spacing:.04em}
+.trap-item .tf{font-size:16px;color:var(--muted);margin-top:5px;line-height:1.4}
+
+/* 06 office */
+.triggers{display:flex;gap:14px;margin-top:6px}
+.trigger{flex:1;background:var(--tint-amber);border:1px solid rgba(185,120,0,.3);border-radius:14px;padding:22px 26px}
+.trigger .t{font-size:25px;font-weight:800;color:var(--accent-ink)}
+.trigger .d{font-size:19px;color:#7a5f3c;margin-top:7px;line-height:1.4}
+.sort-row{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;margin-top:18px;flex:1;align-content:center}
+.sortc{background:#fff;border:1px solid var(--line);border-radius:13px;padding:18px 20px;cursor:pointer;transition:.16s}
+.sortc:hover{border-color:var(--accent)}
+.sortc .q{font-size:21px;color:var(--ink);font-weight:500;line-height:1.35}
+.sortc .rev{display:none;margin-top:13px;align-items:center;gap:11px}
+.sortc.open .rev{display:flex}
+.sortc .v{font-family:var(--mono);font-size:14px;font-weight:700;letter-spacing:.05em;border-radius:7px;padding:6px 12px;color:#fff;flex:0 0 auto}
+.sortc.call .v{background:var(--accent)} .sortc.self .v{background:var(--good)}
+.sortc .vr{font-size:17px;color:var(--muted)}
+.sortc .cue{display:flex;margin-top:11px}
+.sortc.open .cue{display:none}
+.office-mail{margin-top:18px;font-family:var(--mono);font-size:17px;color:var(--ink-2)}
+.office-mail b{color:var(--accent)}
+
+/* 07 PIA picker */
+.pia-cases{display:flex;flex-direction:column;gap:15px;margin-top:18px;flex:1;justify-content:center}
+.case{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 24px;display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center}
+.case .scn{font-size:22px;color:var(--ink);font-weight:500}
+.case .opts{display:flex;gap:9px}
+.opt{font-family:var(--mono);font-size:15px;font-weight:600;letter-spacing:.04em;cursor:pointer;border:1.5px solid var(--line);background:#fff;color:var(--ink-2);border-radius:9px;padding:10px 15px;transition:.15s}
+.opt:hover{border-color:var(--accent)}
+.case.answered .opt{cursor:default}
+.case.answered .opt.right{background:var(--good);border-color:var(--good);color:#fff}
+.case.answered .opt.wrong{background:var(--accent);border-color:var(--accent);color:#fff}
+.case .why{grid-column:1/-1;display:none;font-size:16px;color:var(--muted);line-height:1.4;border-top:1px solid var(--line);padding-top:12px;margin-top:3px}
+.case.answered .why{display:block}
+.case .why b{color:var(--ink-2)}
+
+/* 08 journey */
+.journey-steps{display:flex;align-items:stretch;gap:6px;margin-top:8px}
+.jstep{flex:1;cursor:pointer;background:#fff;border:1.5px solid var(--line);border-radius:13px;padding:15px 12px;text-align:center;transition:.15s;position:relative}
+.jstep:hover{border-color:var(--accent)}
+.jstep.on{background:var(--ink-2);border-color:var(--ink-2)}
+.jstep.on.you{background:var(--accent);border-color:var(--accent)}
+.jstep .n{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--accent)}
+.jstep.on .n{color:#fff;opacity:.85}
+.jstep .l{font-size:17px;font-weight:700;color:var(--ink-2);margin-top:7px;line-height:1.15}
+.jstep.on .l{color:#fff}
+.jstep .you-tag{position:absolute;top:-9px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.06em;background:var(--accent);color:#fff;border-radius:6px;padding:2px 8px}
+.journey-panel{margin-top:18px;background:var(--tint-blue);border:1px solid var(--line-cool);border-radius:14px;padding:22px 26px;min-height:152px}
+.jp-h{font-size:25px;font-weight:800;color:var(--ink-2)}
+.jp-d{font-size:18px;color:var(--muted);margin-top:8px;line-height:1.45}
+.ba-toggle{display:inline-flex;gap:6px;padding:5px;background:#E5EAF2;border-radius:11px;margin-top:16px}
+.ba-toggle .seg{font-family:var(--mono);cursor:pointer;border:none;background:transparent;font-size:13px;font-weight:700;padding:8px 16px;border-radius:8px;color:#7C8699;transition:.15s}
+.ba-toggle .seg.on{background:#fff;color:var(--ink-2)}
+.ba-panel{margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 20px}
+.ba-quote{font-size:20px;color:var(--ink-2);font-weight:600}
+.ba-note{font-size:15px;margin-top:8px}
+.ba-panel.vague .ba-note{color:var(--accent-ink)} .ba-panel.precise .ba-note{color:var(--good)}
+
+/* 09 AI opener */
+.ai-open .body{justify-content:center}
+.ai-open .row{display:grid;grid-template-columns:1.18fr .82fr;gap:42px;align-items:start}
+.ai-open h2{font-size:68px;line-height:.98;font-weight:800;letter-spacing:-.025em;color:var(--ink-2);margin-top:16px}
+.ai-open .lead{font-size:24px;max-width:none;margin-top:22px}
+.chatwin{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 24px 50px rgba(16,36,63,.10)}
+.chat-bar{display:flex;align-items:center;gap:8px;padding:15px 22px;background:#EEF0F4;border-bottom:1px solid var(--line)}
+.chat-bar .d{width:11px;height:11px;border-radius:50%}
+.chat-bar .nm{font-family:var(--mono);font-size:15px;color:#6b7689;letter-spacing:.03em;margin-left:6px}
+.chat-bar .warn{margin-left:auto;font-family:var(--mono);font-size:13.5px;color:var(--accent);font-weight:600}
+.chat-body{padding:28px 28px 24px}
+.chat-prompt{font-family:var(--mono);font-size:19px;color:var(--ink-2);background:#F6F7FA;border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.chat-flag{display:flex;align-items:center;gap:9px;margin-top:18px;background:var(--tint-amber);border:1px solid rgba(185,120,0,.3);border-radius:10px;padding:14px 18px}
+.chat-flag b{color:var(--accent-ink);font-size:17px}
+
+/* 10 pipeline */
+.pipe-row{display:flex;align-items:stretch;gap:4px;margin-top:12px}
+.pnode{flex:1;cursor:pointer;text-align:center;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:20px 10px;transition:.16s}
+.pnode:hover{border-color:var(--accent)}
+.pnode.on{background:var(--accent);border-color:var(--accent)}
+.pnode .n{font-family:var(--mono);font-size:16px;font-weight:700;color:var(--accent)}
+.pnode.on .n{color:#FCEEDD}
+.pnode .l{font-size:19.5px;font-weight:700;color:var(--ink-2);margin-top:8px;line-height:1.15}
+.pnode.on .l{color:#fff}
+.parrow{align-self:center;font-family:var(--mono);font-size:22px;color:#BCC6D6;padding:0 3px}
+.pipe-panel{margin-top:20px;background:var(--tint-blue);border:1px solid var(--line-cool);border-radius:16px;padding:26px 30px;display:flex;gap:24px;align-items:center;min-height:136px}
+.pp-badge{flex:0 0 auto;width:70px;height:70px;border-radius:15px;background:var(--tint-amber);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:24px;font-weight:700;color:var(--accent)}
+.pp-risk{font-size:27px;font-weight:800;color:var(--ink-2)}
+.pp-detail{font-size:18px;color:var(--muted);margin-top:8px;line-height:1.45}
+
+/* 11 decision */
+.dec-grid{display:grid;grid-template-columns:.92fr 1.08fr;gap:36px;align-items:center;margin-top:12px;flex:1}
+.dec-card{margin-top:20px;border-radius:18px;padding:28px 30px;transition:.2s;border:1px solid}
+.dec-card.auto{background:var(--tint-amber);border-color:rgba(185,120,0,.35)}
+.dec-card.human{background:var(--good-tint);border-color:var(--good-line)}
+.dec-card .t{font-size:33px;font-weight:800;margin-bottom:11px}
+.dec-card.auto .t{color:var(--accent-ink)} .dec-card.human .t{color:var(--good)}
+.dec-card .s{font-size:19px;line-height:1.4;color:#46566F}
+.dec-rows{display:flex;flex-direction:column;gap:12px}
+.dec-row{display:flex;gap:16px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:13px;padding:17px 22px}
+.dec-row .ic{flex:0 0 auto;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:800}
+.dec-row.auto .ic{background:var(--tint-amber);color:var(--accent)} .dec-row.human .ic{background:var(--good-tint);color:var(--good)}
+.dec-row .k{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.05em;color:var(--faint)}
+.dec-row .v{font-size:19px;color:#243B5E;margin-top:4px;line-height:1.35}
+
+/* 12 leak */
+.leak-grid{display:grid;grid-template-columns:1.55fr 1fr;gap:26px;margin-top:10px;flex:1;align-items:center}
+.leakwin{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 20px 44px rgba(16,36,63,.10)}
+.leak-body{padding:26px 28px;font-size:21px;line-height:1.95;color:var(--ink)}
+.leak-foot{display:flex;align-items:center;gap:16px;padding:18px 28px;border-top:1px solid var(--line);background:#FAFBFD}
+.leak-foot.safe{background:var(--good-tint);border-top-color:var(--good-line)}
+.lf-count{font-family:var(--mono);font-size:15px;font-weight:600;color:var(--accent)}
+.lf-count.done{color:var(--good)}
+.lf-bar{flex:1;height:8px;border-radius:99px;background:#EAEFF6;overflow:hidden}
+.lf-bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s,background .2s}
+.lf-btn{font-family:var(--sans);font-size:15px;font-weight:700;color:#fff;background:var(--accent);border:none;border-radius:9px;padding:12px 19px;cursor:pointer}
+.lf-reset{font-family:var(--sans);font-size:14px;font-weight:600;color:var(--ink-2);background:transparent;border:1.5px solid var(--line-cool);border-radius:9px;padding:10px 17px;cursor:pointer}
+.leak-foot.safe .lf-msg{font-size:15.5px;font-weight:600;color:var(--good);flex:1}
+.leak-foot.safe .ck{font-size:21px}
+.redacted{background:var(--good-tint);color:var(--good);border-radius:5px;padding:1px 6px;letter-spacing:1px;font-weight:700}
+.leak-pts{display:flex;flex-direction:column;gap:13px}
+.lp{background:#fff;border:1px solid var(--line);border-radius:13px;padding:17px 20px}
+.lp .t{font-size:19px;font-weight:800;color:var(--ink-2)}
+.lp .d{font-size:15.5px;color:var(--muted);margin-top:5px;line-height:1.4}
+
+/* 13 rule of thumb */
+.rot-grid{display:grid;grid-template-columns:1fr 1.18fr;gap:26px;margin-top:8px;flex:1;align-items:stretch}
+.map-list{display:flex;flex-direction:column;gap:10px}
+.map-row{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px 24px}
+.map-row .ai{font-size:22px;font-weight:700;color:var(--ink-2)}
+.map-row .rf{font-size:16.5px;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:8px}
+.map-row .rf .b{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--accent);background:var(--tint-amber);border-radius:5px;padding:2px 7px;flex:0 0 auto}
+.paste-col .ph{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.04em;color:var(--faint);margin-bottom:10px}
+.paste-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
+.pcard{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:20px 20px 18px;cursor:pointer;display:flex;flex-direction:column;min-height:236px;transition:.16s}
+.pcard.open.safe{border-color:var(--good)} .pcard.open.no{border-color:var(--accent)}
+.pcard .lab{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--faint);margin-bottom:11px}
+.pcard .q{font-size:18px;line-height:1.4;color:var(--ink);font-weight:500;flex:1}
+.pcard .cue{margin-top:12px;font-family:var(--mono);font-size:13px;font-weight:600;color:var(--accent)}
+.pcard.open .cue{display:none}
+.pcard .rev{display:none;margin-top:12px}
+.pcard.open .rev{display:block}
+.pcard .v{display:inline-block;font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.05em;color:#fff;border-radius:7px;padding:5px 11px;margin-bottom:8px}
+.pcard.safe .v{background:var(--good)} .pcard.no .v{background:var(--accent)}
+.pcard .vr{font-size:15px;color:var(--muted);line-height:1.4}
+.rot-rules{display:flex;gap:12px;margin-top:14px}
+.rot-rule{flex:1;display:flex;align-items:center;gap:11px;background:var(--good-tint);border:1px solid var(--good-line);border-radius:12px;padding:16px 20px}
+.rot-rule .ic{font-size:26px}
+.rot-rule .x{font-size:18px;color:var(--ink-2);line-height:1.35}
+.rot-rule .x b{color:var(--accent-ink)}
+
+/* 14 takeaways */
+.take-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:26px;flex:1;align-content:center}
+.take{display:flex;gap:24px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:16px;padding:30px 38px}
+.take .n{font-family:var(--mono);font-size:54px;font-weight:700;color:var(--accent);line-height:1}
+.take p{font-size:29px;line-height:1.42;color:var(--ink)}
+.take-mail{margin-top:24px;font-family:var(--mono);font-size:24px;color:var(--ink-2);text-align:center}
+.take-mail b{color:var(--accent)}
+
+
+/* white-background card lift + principles grid */
+.rule-row,.reflex,.reident,.drift,.memo,.sortc,.case,.lp,.pcard,.dec-row,.trap-item,.chip,.verdict-card,.prin{box-shadow:0 1px 2px rgba(20,40,80,.045)}
+.prin-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.prin{display:flex;gap:14px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 16px}
+.prin.key{background:var(--tint-amber);border-color:rgba(185,120,0,.3)}
+.prin .pn{flex:0 0 auto;width:28px;height:28px;border-radius:8px;background:#EEF0F4;color:var(--ink-2);font-family:var(--mono);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.prin.key .pn{background:var(--accent);color:#fff}
+.prin .nm{font-size:16px;font-weight:700;color:var(--ink-2);line-height:1.15}
+.prin .g{font-size:14.5px;color:var(--muted);margin-top:3px;line-height:1.35}
+.prin-note{display:flex;align-items:center;gap:10px;margin-top:14px;font-family:var(--mono);font-size:13.5px;color:var(--accent-ink)}
+.prin-note .pn-dot{width:11px;height:11px;border-radius:3px;background:var(--accent);flex:0 0 auto}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+
+/* --- revisions --- */
+.map-grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;flex:1;align-content:center}
+.paste-solo{width:100%;max-width:1080px;margin:0 auto}
+.nofootrule .foot{border-top-color:transparent}
+.ai-open .chatwin{margin-top:93px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="stage" id="stage">
+
+<!-- 01 COVER -->
+<section class="slide cover active">
+  <div class="body">
+    <h1>Privacy at Echelon</h1>
+    <div class="sub">The foundations, what the Privacy Office does, how we build PIAs, and what AI changes.</div>
+    <div class="present">A presentation to the Business Solutions Group</div>
+    <div class="chips">
+      <span class="pill">Foundations</span>
+      <span class="pill">The Privacy Office</span>
+      <span class="pill">PIAs</span>
+      <span class="pill ai">+ AI</span>
+    </div>
+  </div>
+</section>
+
+<!-- 02 WAGER -->
+<section class="slide">
+  <div class="body">
+    <div class="eyebrow">Why This Matters</div>
+    <div class="h2">Privacy is not just about the law; it is about trust</div>
+    <div class="lead" style="margin-top:30px">People share their personal information with us including health and financial details. Designing our systems to the strictest protection is how we earn trust.</div>
+    <div class="wager-grid">
+      <div>
+        <div class="toggle" id="wagerToggle">
+          <button class="seg on" data-w="0">Comply province&#8209;by&#8209;province</button>
+          <button class="seg" data-w="1">One standard, highest bar</button>
+        </div>
+        <div id="wagerLeft" style="margin-top:18px">
+          <div class="rule-stack">
+            <div class="rule-row"><span class="k">PIPEDA</span><span class="v">Federal floor: 10 principles plus breach reporting.</span></div>
+            <div class="rule-row"><span class="k">LAW 25</span><span class="v">Quebec, the strictest: PIAs, penalties to $25M.</span></div>
+            <div class="rule-row"><span class="k">AB · BC</span><span class="v">Provincial PIPA statutes, their own twists.</span></div>
+          </div>
+          <div style="font-family:var(--mono);font-size:14px;color:var(--muted);margin-top:14px">Three postures to track, reconcile and maintain.</div>
+        </div>
+        <div id="wagerRight" style="display:none;margin-top:18px">
+          <div class="verdict-card one">
+            <div class="vc-tag">One Echelon Standard</div>
+            <div class="vc-h">Built to the strictest rule that applies</div>
+            <div class="vc-list">
+              <div class="vc-li">✓ <span>One checklist that holds everywhere we operate.</span></div>
+              <div class="vc-li">✓ <span>Clears the $25M Law 25 bar by default.</span></div>
+              <div class="vc-li">✓ <span>Nothing to reconcile when we cross a border.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="verdict-card">
+        <div class="vc-tag">The Insight</div>
+        <div class="vc-h">The highest bar is the cheap path</div>
+        <div class="vc-list">
+          <div class="vc-li"><span>Maintaining a different posture per province multiplies cost, risk and confusion.</span></div>
+          <div class="vc-li"><span>A single strong standard is <b>less</b> to build and <b>less</b> to get wrong, and trust, our actual product, stays intact.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 PERSONAL INFORMATION -->
+<section class="slide">
+  <div class="body">
+    <div class="eyebrow">Foundations</div>
+    <div class="h2">What counts as 'personal information'?</div>
+    <div class="lead">Information about an identifiable individual in any form.</div>
+    <div class="lead" style="margin-top:10px;font-size:19px;color:#3C4866">The test: could someone be singled out, even indirectly? If yes, then it's personal information.</div>
+    <div class="fill">
+      <div class="pi-grid">
+        <div class="chip">Name &amp; contact</div>
+        <div class="chip sensitive">Policy &amp; claims history <span class="s">SENSITIVE</span></div>
+        <div class="chip sensitive">Driving &amp; telematics <span class="s">SENSITIVE</span></div>
+        <div class="chip sensitive">Health in claims <span class="s">SENSITIVE</span></div>
+        <div class="chip sensitive">Banking &amp; payment <span class="s">SENSITIVE</span></div>
+        <div class="chip">Credit-based scores</div>
+        <div class="chip">Photos of damage</div>
+        <div class="chip sensitive">Device, IP &amp; location <span class="s">SENSITIVE</span></div>
+        <div class="chip">Complaints history</div>
+      </div>
+      <div class="reident" style="margin-top:18px">
+        <div>
+          <div style="font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.04em;color:var(--accent);margin-bottom:12px">Re-identification · tap to combine</div>
+          <div class="ri-chips">
+            <div class="ri-chip" data-ri>Postal code</div>
+            <div class="ri-chip" data-ri>Date of birth</div>
+            <div class="ri-chip" data-ri>Sex</div>
+          </div>
+        </div>
+        <div class="ri-read">
+          <div class="ri-num" id="riNum">≈ 36 million</div>
+          <div class="ri-cap" id="riCap">people share these traits. None of it is "personal" on its own.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 TEN PRINCIPLES -->
+<section class="slide">
+  <div class="body">
+    <div class="eyebrow">Foundations · The Whole Rulebook</div>
+    <div class="h2">The ten principles of privacy</div>
+    <div class="lead">Canadian Federal privacy law (PIPEDA) is built on ten fair information principles.</div>
+    <div class="fill">
+      <div class="prin-grid">
+        <div class="prin"><span class="pn">1</span><div><div class="nm">Accountability</div><div class="g">Someone owns privacy, and we answer for it.</div></div></div>
+        <div class="prin"><span class="pn">2</span><div><div class="nm">Identifying Purposes</div><div class="g">Say why we're collecting, up front.</div></div></div>
+        <div class="prin key"><span class="pn">3</span><div><div class="nm">Consent</div><div class="g">Get meaningful agreement for each purpose.</div></div></div>
+        <div class="prin key"><span class="pn">4</span><div><div class="nm">Limiting Collection</div><div class="g">Take only what the purpose needs.</div></div></div>
+        <div class="prin key"><span class="pn">5</span><div><div class="nm">Limiting Use, Disclosure &amp; Retention</div><div class="g">Use it only for that purpose; keep it only as long as needed.</div></div></div>
+        <div class="prin"><span class="pn">6</span><div><div class="nm">Accuracy</div><div class="g">Keep it correct and current.</div></div></div>
+        <div class="prin key"><span class="pn">7</span><div><div class="nm">Safeguards</div><div class="g">Protect it in step with its sensitivity.</div></div></div>
+        <div class="prin"><span class="pn">8</span><div><div class="nm">Openness</div><div class="g">Make our practices easy to find.</div></div></div>
+        <div class="prin"><span class="pn">9</span><div><div class="nm">Individual Access</div><div class="g">People can see and correct their data.</div></div></div>
+        <div class="prin"><span class="pn">10</span><div><div class="nm">Challenging Compliance</div><div class="g">People can question how we handle it.</div></div></div>
+      </div>
+      <div class="prin-note"><span class="pn-dot"></span>The four highlighted principles drive the two we lean on most, which is the next slide.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 TWO REFLEXES -->
+<section class="slide">
+  <div class="body">
+    <div class="eyebrow">Foundations · Where to Focus</div>
+    <div class="h2">Two principles stand out in our business</div>
+    <div class="lead">Always think of these two questions when personal data is involved.</div>
+    <div class="fill">
+      <div class="reflex-row">
+        <div class="reflex"><div class="q">Do we actually need this?</div><div class="m">MINIMIZE · PRINCIPLES 4, 5 &amp; 7</div><div class="d">Collect only what the purpose needs; keep it only as long as it's needed.</div></div>
+        <div class="reflex"><div class="q">Are we using the data for a new purpose?</div><div class="m">CONSENT · PRINCIPLE 3</div><div class="d">Data collected for one reason can't quietly power another without a fresh look.</div></div>
+      </div>
+      <div class="drift">
+        <div class="drift-lbl">Purpose drift · one field, four uses · tap to advance</div>
+        <div class="drift-steps" id="driftSteps">
+          <div class="drift-step on" data-d="0">Settle the claim</div><span class="arrow">→</span>
+          <div class="drift-step" data-d="1">Train a fraud model</div><span class="arrow">→</span>
+          <div class="drift-step" data-d="2">Build marketing lists</div><span class="arrow">→</span>
+          <div class="drift-step" data-d="3">Share with brokers</div>
+        </div>
+        <div class="drift-panel ok" id="driftPanel">
+          <div class="dp-meter"><div class="lab">CONSENT INTACT</div><div class="dp-bar"><i id="driftBar" style="width:100%"></i></div></div>
+          <div class="dp-txt"><div class="reflex-line" id="driftReflex">Purpose matches what the customer agreed to.</div><div class="rule-line" id="driftRule">Principle 2 · Identifying purposes</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 SPOT THE TRAP -->
+<section class="slide">
+  <div class="body">
+    <div class="eyebrow">Foundations · Privacy by Design</div>
+    <div class="h2">Build it in, and spot how it breaks</div>
+    <div class="lead">The cheapest fix is before a line of code. The failure modes are predictable, so we can catch them.</div>
+    <div class="trap-wrap">
+      <div class="memo">
+        <div class="label">Project kickoff note · tap the risky moves</div>
+        We'll <span class="tap" data-trap="0">pull the full claims table</span> into a spreadsheet so the <span class="tap" data-trap="1">vendor can test against real data</span>, add a <span class="tap" data-trap="2">"just in case" household field</span>, and <span class="tap" data-trap="3">reuse last year's marketing list</span> to seed outreach.
+      </div>
+      <div class="trap-side">
+        <div class="counter" id="trapCount">0 of 4 traps found</div>
+        <div class="trap-list">
+          <div class="trap-item" id="trap-0"><div class="tn">Data hoarding<span class="nm">PRINCIPLE 4</span></div><div class="tf">Export the fields you need, not the whole table; that's the breach blast-radius.</div></div>
+          <div class="trap-item" id="trap-1"><div class="tn">Real data in test<span class="nm">VENDOR + 7</span></div><div class="tf">Use masked data, and bind the vendor with a contract before anything moves.</div></div>
+          <div class="trap-item" id="trap-2"><div class="tn">Scope creep<span class="nm">PRINCIPLE 4</span></div><div class="tf">A field added "just in case" is data you must protect forever.</div></div>
+          <div class="trap-item" id="trap-3"><div class="tn">Secondary use<span class="nm">PRINCIPLE 3</span></div><div class="tf">A marketing list for a new purpose needs fresh consent, not a free ride.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- 07 PIAS DEMYSTIFIED -->
+<section class="slide">
+  <div class="body">
+    <div class="eyebrow">PIAs</div>
+    <div class="h2">Privacy Impact Assessments</div>
+    <div class="lead" style="margin-top:30px;color:#3C4866">A structured way to find and reduce privacy risk before launch, the cheapest insurance we write. Often <em>smart</em> long before it's <em>mandatory</em>.</div>
+    <div style="font-size:19px;color:#243B5E;font-weight:600;margin-top:8px;margin-bottom:2px">Let's look at these 3 scenarios together and you let us know if a PIA is Required.</div>
+    <div class="pia-cases" id="piaCases">
+      <div class="case" data-correct="Required">
+        <div class="scn">1. Building a new claims-intake system that stores customer records.</div>
+        <div class="opts"><button class="opt">Required</button><button class="opt">Smart</button><button class="opt">Skip</button></div>
+        <div class="why"><b>Required.</b> Law 25 mandates a PIA for any new system handling personal information.</div>
+      </div>
+      <div class="case" data-correct="Smart">
+        <div class="scn">2. Piloting an AI tool to summarize claims for adjusters.</div>
+        <div class="opts"><button class="opt">Required</button><button class="opt">Smart</button><button class="opt">Skip</button></div>
+        <div class="why"><b>Smart.</b> Not strictly mandated yet, but novel and high-risk, so do one anyway. This is the gotcha: PIAs matter beyond the mandate.</div>
+      </div>
+      <div class="case" data-correct="Skip">
+        <div class="scn">3. Fixing a contact error on the Echelon webpage (no data involved).</div>
+        <div class="opts"><button class="opt">Required</button><button class="opt">Smart</button><button class="opt">Skip</button></div>
+        <div class="why"><b>Skip.</b> No personal information, no new use. Right-size the effort to the risk.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 08 PIA JOURNEY -->
+<section class="slide">
+  <div class="body">
+    <div class="eyebrow">PIAs · Your Role</div>
+    <div class="h2">The PIA journey, and where the team can come in</div>
+    <div class="lead" style="margin-top:30px;color:#3C4866">A PIA's quality depends on the information collected. We must start at the earliest stages and be precise about data.</div>
+    <div class="fill">
+      <div class="journey-steps" id="journeySteps" style="margin-top:26px">
+        <div class="jstep" data-j="0"><div class="n">01</div><div class="l">Trigger &amp; scope</div></div>
+        <div class="jstep on" data-j="1"><div class="n">02</div><div class="l">Map the data</div></div>
+        <div class="jstep" data-j="2"><div class="n">03</div><div class="l">Assess risks</div></div>
+        <div class="jstep" data-j="3"><div class="n">04</div><div class="l">Mitigate</div></div>
+        <div class="jstep" data-j="4"><div class="n">05</div><div class="l">Sign-off &amp; monitor</div></div>
+      </div>
+      <div class="journey-panel" id="journeyPanel"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 09 AI OPENER -->
+<section class="slide ai-open">
+  <div class="body">
+    <div class="row">
+      <div>
+        <h2 style="white-space:nowrap;font-size:56px">Privacy in the age of AI</h2>
+        <div class="lead">Generative tools now draft our emails and summarize our claims. They're brilliant, and they raise real privacy questions at every step. Let's map them.</div>
+      </div>
+      <div class="chatwin">
+        <div class="chat-bar"><span class="d" style="background:var(--accent-soft)"></span><span class="d" style="background:#C7CFDB"></span><span class="d" style="background:#C7CFDB"></span><span class="nm">assistant-chat-window</span><span class="warn">⚠ Copilot web on</span></div>
+        <div class="chat-body">
+          <div class="chat-prompt">&gt; summarize this customer's claim</div>
+          <div class="chat-flag">⚠ <b>5 pieces of personal information attached</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 PIPELINE -->
+<section class="slide">
+  <div class="body">
+    <div class="eyebrow">AI &amp; Privacy · The Landscape</div>
+    <div class="h2">AI carries privacy risk at every step</div>
+    <div class="lead" style="margin-top:34px;color:#3C4866">Not one risk, but a chain of them, from the data a model is trained on to the decisions it makes. Tap a stage.</div>
+    <div class="fill">
+      <div class="pipe-row" id="pipeRow" style="margin-top:30px">
+        <div class="pnode on" data-p="0"><div class="n">01</div><div class="l">Training data</div></div><span class="parrow">→</span>
+        <div class="pnode" data-p="1"><div class="n">02</div><div class="l">The model</div></div><span class="parrow">→</span>
+        <div class="pnode" data-p="2"><div class="n">03</div><div class="l">Your inputs</div></div><span class="parrow">→</span>
+        <div class="pnode" data-p="3"><div class="n">04</div><div class="l">The output</div></div><span class="parrow">→</span>
+        <div class="pnode" data-p="4"><div class="n">05</div><div class="l">The decision</div></div>
+      </div>
+      <div class="pipe-panel" id="pipePanel"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 11 DECISION -->
+<section class="slide">
+  <div class="body">
+    <div class="eyebrow">AI &amp; Privacy · Automated Decisions</div>
+    <div class="h2">When the machine helps decide</div>
+    <div class="lead" style="margin-top:34px;color:#3C4866">AI now helps rank claims, set prices and flag fraud. Flip the switch to see what changes for the customer.</div>
+    <div class="dec-grid">
+      <div>
+        <div class="toggle" id="decToggle">
+          <button class="seg on" data-m="auto">AI decides alone</button>
+          <button class="seg" data-m="human">Human in the loop</button>
+        </div>
+        <div id="decCard"></div>
+      </div>
+      <div class="dec-rows" id="decRows"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 12 LEAK -->
+<section class="slide">
+  <div class="body">
+    <div class="eyebrow">AI &amp; Privacy · How It Leaks</div>
+    <div class="h2">How a helpful prompt becomes a leak</div>
+    <div class="lead" style="margin-top:34px;color:#3C4866">An adjuster pastes a real claim into a public chatbot. Tap each piece of personal information about to leave the building.</div>
+    <div class="leak-grid">
+      <div class="leakwin">
+        <div class="chat-bar"><span class="d" style="background:var(--accent-soft)"></span><span class="d" style="background:#C7CFDB"></span><span class="d" style="background:#C7CFDB"></span><span class="nm">assistant-chat-window</span><span class="warn">⚠ Copilot web on</span></div>
+        <div class="leak-body" id="leakBody"></div>
+        <div class="leak-foot" id="leakFoot"></div>
+      </div>
+      <div class="leak-pts">
+        <div class="lp"><div class="t">Third party tools aren't ours</div><div class="d">Inputs may be stored, reviewed, or used to train future models.</div></div>
+        <div class="lp"><div class="t">This is a secondary use</div><div class="d">Claim data was collected to settle a claim, not to feed a chatbot.</div></div>
+        <div class="lp"><div class="t">You can't recall it</div><div class="d">Once it's sent, it's gone. There's no undo on a leak.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 13a PLAYBOOK · MAPPING -->
+<section class="slide">
+  <div class="body">
+    <div class="eyebrow">AI &amp; Privacy · The Playbook</div>
+    <div class="h2">AI doesn't get a privacy exemption</div>
+    <div class="lead" style="margin-top:34px;color:#3C4866">Every AI question maps to your understanding of and compliance with privacy law. Same foundations, just an emerging technology to apply it.</div>
+    <div class="map-grid2">
+      <div class="map-row"><div class="ai">Training or tuning on customer data</div><div class="rf"><span class="b">CONSENT</span>It's a new purpose that needs a fresh look.</div></div>
+      <div class="map-row"><div class="ai">Pasting personal data into AI tools</div><div class="rf"><span class="b">MINIMIZE</span>Strip it first; safeguard the rest.</div></div>
+      <div class="map-row"><div class="ai">A new AI vendor or cross-border flow</div><div class="rf"><span class="b">LAW 25</span>Triggers a PIA.</div></div>
+      <div class="map-row"><div class="ai">AI making decisions about people</div><div class="rf"><span class="b">LAW 25</span>Right to explanation &amp; human review.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 13b PLAYBOOK · SAFE TO PASTE -->
+<section class="slide">
+  <div class="body">
+    <div class="eyebrow">AI &amp; Privacy · The Playbook</div>
+    <div class="h2">AI doesn't get a privacy exemption</div>
+    <div class="lead" style="margin-top:34px;color:#3C4866">Every AI question maps to your understanding of and compliance with privacy law. Same foundations, just an emerging technology to apply it.</div>
+    <div class="fill">
+      <div class="paste-col paste-solo">
+        <div class="ph">Safe to paste? Tap to check</div>
+        <div class="paste-cards" id="pasteCards">
+          <div class="pcard safe"><div class="lab">PROMPT 01</div><div class="q">"Explain in plain language how roof depreciation affects a payout."</div><div class="cue">Tap to check ▸</div><div class="rev"><span class="v">SAFE TO PASTE</span><div class="vr">No personal information, just general knowledge.</div></div></div>
+          <div class="pcard no"><div class="lab">PROMPT 02</div><div class="q">"Rewrite this: claimant R. Dineen, 22 Birch Rd, has a prior fraud flag…"</div><div class="cue">Tap to check ▸</div><div class="rev"><span class="v">DON'T PASTE</span><div class="vr">A name, address and sensitive flag: that's a customer's data.</div></div></div>
+          <div class="pcard no"><div class="lab">PROMPT 03</div><div class="q">"Anonymize and summarize: John Doe, policy 7781-204, diagnosed with…"</div><div class="cue">Tap to check ▸</div><div class="rev"><span class="v">DON'T PASTE</span><div class="vr">Asking it to anonymize means you already pasted the raw data. The leak already happened.</div></div></div>
+        </div>
+        <div class="rot-rules">
+          <div class="rot-rule"><span class="ic">✉️</span><div class="x">Treat a public chatbot like a <b>postcard</b>: assume anyone could read it.</div></div>
+          <div class="rot-rule"><span class="ic">🔁</span><div class="x">A new AI use is a <b>new purpose</b>, so ask the Office and trigger a PIA.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 14 TAKEAWAYS -->
+<section class="slide nofootrule">
+  <div class="body">
+    <div class="eyebrow">What to Take Away</div>
+    <div class="h2">A few things to carry forward</div>
+    <div class="take-grid">
+      <div class="take"><span class="n">1</span><p>Personal information is anything that can single someone out, including "anonymous" data that re-identifies.</p></div>
+      <div class="take"><span class="n">2</span><p>Two reflexes answer core questions: do we actually need this, and are we using the data for a new purpose?</p></div>
+      <div class="take"><span class="n">3</span><p>Build privacy in early, and call the Office for any incident or any question, big or small.</p></div>
+      <div class="take"><span class="n">4</span><p>On PIAs, your specifics are what make them reliable. And AI changes the place, not the rules.</p></div>
+    </div>
+    <div class="take-mail">Echelon Insurance, Privacy Office &nbsp;·&nbsp; <b>privacyofficer@echeloninsurance.ca</b></div>
+  </div>
+</section>
+
+<!-- 06 PRIVACY OFFICE -->
+<section class="slide">
+  <div class="body">
+    <div class="eyebrow">The Privacy Office</div>
+    <div class="h2">Privacy is here to help</div>
+    <div class="fill">
+      <div class="triggers" style="margin-top:44px">
+        <div class="trigger"><div class="t">"I think information was exposed"</div><div class="d">Unauthorized access, loss or disclosure. Tell us right away.</div></div>
+        <div class="trigger"><div class="t">"I have a question"</div><div class="d">Big or small, before or during a project. No question is too small.</div></div>
+      </div>
+      <div class="sort-row" id="sortRow">
+        <div class="sortc call"><div class="q">A claims spreadsheet was emailed to the wrong vendor.</div><div class="cue"><span class="hint">Contact us, or you've got this? ▸</span></div><div class="rev"><span class="v">CONTACT US</span><span class="vr">Suspected incident: we contain and report.</span></div></div>
+        <div class="sortc call"><div class="q">A new tool will send customer data to a US vendor.</div><div class="cue"><span class="hint">Contact us, or you've got this? ▸</span></div><div class="rev"><span class="v">CONTACT US</span><span class="vr">Cross-border flow: it triggers a PIA.</span></div></div>
+        <div class="sortc self"><div class="q">You're choosing how to visualize aggregate claims trends in a dashboard.</div><div class="cue"><span class="hint">Contact us, or you've got this? ▸</span></div><div class="rev"><span class="v">YOU'VE GOT THIS</span><span class="vr">Analysis call: loop us in only if it drills into individual records.</span></div></div>
+        <div class="sortc call"><div class="q">You spot a "just in case" field in a spec.</div><div class="cue"><span class="hint">Contact us, or you've got this? ▸</span></div><div class="rev"><span class="v">CONTACT US</span><span class="vr">Flag it: minimizing early is cheapest.</span></div></div>
+      </div>
+      <div class="office-mail">Reach out anytime &nbsp;·&nbsp; <b>privacyofficer@echeloninsurance.ca</b></div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /stage -->
+</div><!-- /wrap -->
+
+<div class="progress"><div class="bar" id="progressBar"></div></div>
+<div class="nav">
+  <button id="prev" aria-label="Previous slide">‹</button>
+  <span class="count" id="count">01 / 15</span>
+  <button id="next" aria-label="Next slide">›</button>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var stage = document.getElementById('stage');
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var total = slides.length;
+  var idx = 0;
+  var pad = function(n){ return (n<10?'0':'')+n; };
+
+  /* footer (brand + page number) and logo on every page */
+  slides.forEach(function(s,i){
+    var f = document.createElement('div');
+    f.className = 'foot';
+    f.innerHTML = '<span class="f-brand">Privacy at Echelon</span>'
+      + '<span class="f-sep">·</span>'
+      + '<span class="f-num">'+pad(i+1)+' / '+pad(total)+'</span>';
+    s.appendChild(f);
+    var lg = document.createElement('div');
+    lg.className = 'logo';
+    s.appendChild(lg);
+  });
+
+  function fit(){
+    var s = Math.min(window.innerWidth/1280, window.innerHeight/720);
+    stage.style.transform = 'scale('+s+')';
+  }
+  window.addEventListener('resize', fit); fit();
+
+  var bar = document.getElementById('progressBar');
+  var count = document.getElementById('count');
+  function show(i){
+    idx = (i+total)%total;
+    slides.forEach(function(s,j){ s.classList.toggle('active', j===idx); });
+    bar.style.width = ((idx+1)/total*100)+'%';
+    count.textContent = pad(idx+1)+' / '+pad(total);
+  }
+  document.getElementById('prev').onclick = function(){ show(idx-1); };
+  document.getElementById('next').onclick = function(){ show(idx+1); };
+  document.addEventListener('keydown', function(e){
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){ e.preventDefault(); show(idx+1); }
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); show(idx-1); }
+    else if(e.key==='Home'){ show(0); } else if(e.key==='End'){ show(total-1); }
+  });
+  show(0);
+
+  /* 02 wager toggle */
+  var wt = document.getElementById('wagerToggle');
+  wt.addEventListener('click', function(e){
+    var b = e.target.closest('[data-w]'); if(!b) return;
+    wt.querySelectorAll('.seg').forEach(function(x){ x.classList.remove('on'); });
+    b.classList.add('on');
+    var one = b.getAttribute('data-w')==='1';
+    document.getElementById('wagerLeft').style.display = one?'none':'block';
+    document.getElementById('wagerRight').style.display = one?'block':'none';
+  });
+
+  /* 03 re-identification */
+  var riReads = [
+    {n:'≈ 36 million', c:'people share these traits. None of it is "personal" on its own.'},
+    {n:'≈ 8,400', c:'one of these narrows the field to a town-sized crowd.'},
+    {n:'≈ 120', c:'two together, and you are down to a single street.'},
+    {n:'1 person', c:'three "anonymous" fields now identify exactly one human. That is re-identification.'}
+  ];
+  var riChips = document.querySelectorAll('[data-ri]');
+  var riNum = document.getElementById('riNum'), riCap = document.getElementById('riCap');
+  function riUpdate(){
+    var on = 0; riChips.forEach(function(c){ if(c.classList.contains('on')) on++; });
+    var r = riReads[on];
+    riNum.textContent = r.n; riCap.textContent = r.c;
+    riNum.classList.toggle('solved', on===3);
+  }
+  riChips.forEach(function(c){ c.addEventListener('click', function(){ c.classList.toggle('on'); riUpdate(); }); });
+
+  /* 04 purpose drift */
+  var drift = [
+    {cls:'ok',  bar:100, reflex:'Purpose matches what the customer agreed to.', rule:'Principle 2 · Identifying purposes'},
+    {cls:'',    bar:60,  reflex:'New purpose: model training needs fresh consent.', rule:'Principle 3 · Consent'},
+    {cls:'bad', bar:30,  reflex:'Repurposed for marketing, not what they agreed to.', rule:'Principles 3 & 5 · Consent & use'},
+    {cls:'bad', bar:8,   reflex:'Disclosed to a third party, which needs a basis and a contract.', rule:'Principle 5 plus a PIA'}
+  ];
+  var driftSteps = document.getElementById('driftSteps');
+  var driftPanel = document.getElementById('driftPanel');
+  var driftBar = document.getElementById('driftBar');
+  var driftReflex = document.getElementById('driftReflex');
+  var driftRule = document.getElementById('driftRule');
+  driftSteps.addEventListener('click', function(e){
+    var s = e.target.closest('[data-d]'); if(!s) return;
+    var i = +s.getAttribute('data-d'); var d = drift[i];
+    driftSteps.querySelectorAll('.drift-step').forEach(function(x,j){ x.classList.toggle('on', j<=i); });
+    driftPanel.className = 'drift-panel ' + d.cls;
+    driftBar.style.width = d.bar+'%';
+    driftBar.style.background = d.cls==='ok' ? 'var(--good)' : (d.cls==='bad' ? 'var(--accent)' : 'var(--accent-soft)');
+    driftReflex.textContent = d.reflex; driftRule.textContent = d.rule;
+  });
+
+  /* 05 spot the trap */
+  var traps = document.querySelectorAll('[data-trap]');
+  var trapFound = {}; var trapCount = document.getElementById('trapCount');
+  traps.forEach(function(t){
+    t.addEventListener('click', function(){
+      var i = t.getAttribute('data-trap');
+      if(trapFound[i]) return;
+      trapFound[i] = true; t.classList.add('on');
+      document.getElementById('trap-'+i).classList.add('found');
+      var n = Object.keys(trapFound).length;
+      trapCount.textContent = n+' of 4 traps found';
+      if(n===4) trapCount.textContent = 'All 4 found, and every one was predictable.';
+    });
+  });
+
+  /* 06 office sort */
+  document.getElementById('sortRow').addEventListener('click', function(e){
+    var c = e.target.closest('.sortc'); if(c) c.classList.toggle('open');
+  });
+
+  /* 07 PIA picker */
+  document.getElementById('piaCases').addEventListener('click', function(e){
+    var o = e.target.closest('.opt'); if(!o) return;
+    var caseEl = o.closest('.case'); if(caseEl.classList.contains('answered')) return;
+    var correct = caseEl.getAttribute('data-correct');
+    caseEl.classList.add('answered');
+    caseEl.querySelectorAll('.opt').forEach(function(b){
+      if(b.textContent.trim()===correct) b.classList.add('right');
+      else if(b===o) b.classList.add('wrong');
+    });
+  });
+
+  /* 08 journey */
+  var journey = [
+    {h:'Trigger &amp; scope', d:'What\u2019s the project, and what data is involved? Best caught at kickoff, not launch.'},
+    {h:'Map the data', d:'Sources, uses, flows and third parties. This is where the Business Solutions Group plugs in.', map:true},
+    {h:'Assess risks', d:'Necessity, proportionality and safeguards, judged against what you mapped.'},
+    {h:'Mitigate', d:'Controls, contracts and design changes that bring the risk down.'},
+    {h:'Sign-off &amp; monitor', d:'Approve, then treat the PIA as a living document as the project changes.'}
+  ];
+  var jPanel = document.getElementById('journeyPanel');
+  var baState = 'vague';
+  function renderJourney(i){
+    var s = journey[i];
+    var html = '<div class="jp-h">'+s.h+'</div><div class="jp-d">'+s.d+'</div>';
+    if(s.map){
+      html += '<div class="ba-toggle" id="baToggle">'
+        + '<button class="seg'+(baState==='vague'?' on':'')+'" data-ba="vague">Vague input</button>'
+        + '<button class="seg'+(baState==='precise'?' on':'')+'" data-ba="precise">Precise input</button></div>';
+      if(baState==='vague'){
+        html += '<div class="ba-panel vague"><div class="ba-quote">\u201cWe collect customer information through the portal.\u201d</div><div class="ba-note">Vague in, useless out: the assessment can\u2019t see the privacy risk to the customer or to Echelon.</div></div>';
+      }else{
+        html += '<div class="ba-panel precise"><div class="ba-quote">\u201cName, policy #, claim photos. Shared with Vendor X (US). Kept 7 years.\u201d</div><div class="ba-note">Precise in, reliable out: now the risk is assessable.</div></div>';
+      }
+    }
+    jPanel.innerHTML = html;
+    var bt = document.getElementById('baToggle');
+    if(bt){ bt.addEventListener('click', function(e){
+      var b = e.target.closest('[data-ba]'); if(!b) return;
+      baState = b.getAttribute('data-ba'); renderJourney(i);
+    }); }
+  }
+  document.getElementById('journeySteps').addEventListener('click', function(e){
+    var s = e.target.closest('[data-j]'); if(!s) return;
+    var i = +s.getAttribute('data-j');
+    document.querySelectorAll('#journeySteps .jstep').forEach(function(x,j){ x.classList.toggle('on', j===i); });
+    renderJourney(i);
+  });
+  renderJourney(1);
+
+  /* 10 pipeline */
+  var stages = [
+    {n:'01', risk:'Trained on data collected without consent', detail:'Models learn from massive datasets, often scraped from the web, that can include personal information gathered without anyone ever agreeing to it.'},
+    {n:'02', risk:'Memorizes and can leak what it learned', detail:'A model can memorize fragments of its training data and reproduce them later (names, numbers, even medical details) when prompted the right way.'},
+    {n:'03', risk:'Prompts become someone else\u2019s data', detail:'Whatever Associates type or paste in (claims, health notes, customer names) may be stored, reviewed by the provider, or used to train future models.'},
+    {n:'04', risk:'Exposes real data, or invents false data', detail:'Generated text can surface real personal information, or confidently invent false \u201cfacts\u201d about real people that then get acted on.'},
+    {n:'05', risk:'Bias and errors hit real customers', detail:'When AI scores, ranks or decides about a customer, hidden bias and mistakes translate directly into unfair, hard-to-explain outcomes.'}
+  ];
+  var pipePanel = document.getElementById('pipePanel');
+  function renderPipe(i){
+    var s = stages[i];
+    pipePanel.innerHTML = '<div class="pp-badge">'+s.n+'</div><div><div class="pp-risk">'+s.risk+'</div><div class="pp-detail">'+s.detail+'</div></div>';
+  }
+  document.getElementById('pipeRow').addEventListener('click', function(e){
+    var n = e.target.closest('[data-p]'); if(!n) return;
+    var i = +n.getAttribute('data-p');
+    document.querySelectorAll('#pipeRow .pnode').forEach(function(x,j){ x.classList.toggle('on', j===i); });
+    renderPipe(i);
+  });
+  renderPipe(0);
+
+  /* 11 decision */
+  var dec = {
+    auto:{ title:'AI decides alone', sub:'Fast and cheap, but the customer is left in the dark.', rows:[
+      {k:'Transparency', v:'The customer is told a computer decided, but not why.'},
+      {k:'Fairness', v:'Bias buried in the data can quietly shape who gets approved.'},
+      {k:'Recourse', v:'No human to question, and no one to appeal to.'} ]},
+    human:{ title:'A human stays in the loop', sub:'AI assists, a person stays accountable, and Law 25 is satisfied.', rows:[
+      {k:'Transparency', v:'Law 25: the customer can ask which factors were used.'},
+      {k:'Fairness', v:'A person reviews edge cases and catches bias the model misses.'},
+      {k:'Recourse', v:'Law 25: the customer can request a review by a human.'} ]}
+  };
+  var decCard = document.getElementById('decCard'), decRows = document.getElementById('decRows');
+  function renderDec(m){
+    var d = dec[m]; var human = m==='human';
+    decCard.innerHTML = '<div class="dec-card '+m+'"><div class="t">'+d.title+'</div><div class="s">'+d.sub+'</div></div>';
+    decRows.innerHTML = d.rows.map(function(r){
+      return '<div class="dec-row '+m+'"><span class="ic">'+(human?'\u2713':'\u2715')+'</span><div><div class="k">'+r.k+'</div><div class="v">'+r.v+'</div></div></div>';
+    }).join('');
+  }
+  document.getElementById('decToggle').addEventListener('click', function(e){
+    var b = e.target.closest('[data-m]'); if(!b) return;
+    document.querySelectorAll('#decToggle .seg').forEach(function(x){ x.classList.remove('on'); });
+    b.classList.add('on'); renderDec(b.getAttribute('data-m'));
+  });
+  renderDec('auto');
+
+  /* 12 leak game */
+  var segs = [
+    {t:'Hi! Write a friendly claim-summary email from these notes. '},
+    {pii:0, type:'NAME', text:'Sarah Whitfield'},
+    {t:' filed a water-damage claim under policy '},
+    {pii:1, type:'POLICY #', text:'X4471882'},
+    {t:'. The loss is at '},
+    {pii:2, type:'ADDRESS', text:'19 Rosedale Ave, Toronto'},
+    {t:'. She mentioned she is '},
+    {pii:3, type:'HEALTH · SENSITIVE', text:'on disability leave for a back injury'},
+    {t:'. Best callback number is '},
+    {pii:4, type:'PHONE', text:'416-555-0148'},
+    {t:'.'}
+  ];
+  var flagged = {}, redacted = false;
+  var leakBody = document.getElementById('leakBody'), leakFoot = document.getElementById('leakFoot');
+  function renderLeak(){
+    leakBody.innerHTML = '';
+    segs.forEach(function(s){
+      if(s.t!==undefined){ leakBody.appendChild(document.createTextNode(s.t)); return; }
+      var span = document.createElement('span');
+      if(redacted){
+        span.className='redacted'; span.textContent='\u2588'.repeat(Math.min(s.text.length,12));
+      }else if(flagged[s.pii]){
+        span.className='tap on'; span.innerHTML = s.text+'<sup class="tag">'+s.type+'</sup>';
+      }else{
+        span.className='tap'; span.textContent=s.text;
+        span.addEventListener('click', function(){ flagged[s.pii]=true; renderLeak(); });
+      }
+      leakBody.appendChild(span);
+    });
+    var found = Object.keys(flagged).length;
+    if(redacted){
+      leakFoot.className='leak-foot safe';
+      leakFoot.innerHTML='<span class="ck">\u2713</span><span class="lf-msg">Safe to send: every identifier is masked before it leaves.</span><button class="lf-reset" id="leakReset">Start over</button>';
+    }else{
+      leakFoot.className='leak-foot';
+      leakFoot.innerHTML='<span class="lf-count'+(found===5?' done':'')+'">'+found+' of 5 found</span>'
+        +'<span class="lf-bar"><i style="width:'+(found/5*100)+'%;background:'+(found===5?'var(--good)':'var(--accent)')+'"></i></span>'
+        +'<button class="lf-btn" id="leakRedact">'+(found===5?'Redact &amp; send safely \u2192':'Redact anyway')+'</button>';
+    }
+    var rb = document.getElementById('leakRedact');
+    if(rb) rb.addEventListener('click', function(){ redacted=true; renderLeak(); });
+    var rs = document.getElementById('leakReset');
+    if(rs) rs.addEventListener('click', function(){ flagged={}; redacted=false; renderLeak(); });
+  }
+  renderLeak();
+
+  /* 13 paste cards */
+  document.getElementById('pasteCards').addEventListener('click', function(e){
+    var c = e.target.closest('.pcard'); if(c) c.classList.toggle('open');
+  });
+
+})();
+</script>
+</body>
+</html>
