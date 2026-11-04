@@ -1,818 +1,792 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Decision Rule Training</title>
-<meta name="description" content="Interactive slide-style training guide for analysts applying the Privacy Residual Risk Decision Rule v1.1: the six inputs, the seven calculation steps, a live calculator, worked examples and a knowledge check.">
+<title>Using Copilot to manage your Outlook inbox</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
+/* Layout: a fixed 16:9 slide stage centred in the viewport, scaled by container units; a thin top tracker and a bottom control bar; notes dock on the right. */
 :root{
-  --navy:#002B5C; --red:#C8102E; --ink:#1F1F1F; --grey:#545454; --faint:#767676; --light:#F2F2F2; --line:#D6D6D6; --white:#FFFFFF; --link:#0057A8;
-  --low:#E3F1E4; --low-ink:#1B5E20; --med:#FFF1C2; --med-ink:#6B4F00; --high:#F9D9D6; --high-ink:#8A1C1C;
-  --ok:#1B5E20; --warn:#B36B00; --bad:#C8102E;
-  /* type scale: grows with the window, capped for very large screens */
-  --fs:clamp(18px,1.55vw,30px); --fs-sm:clamp(15px,1.2vw,23px); --fs-tbl:clamp(16px,1.4vw,27px);
-  --fs-h1:clamp(40px,4.8vw,84px); --fs-h2:clamp(30px,3.1vw,58px); --fs-h3:clamp(20px,1.75vw,33px);
-  --pad:clamp(16px,1.5vw,30px);
+  --bg:#F3F5F8; --surface:#FFFFFF; --ink:#141B2D; --ink-2:#4F5870; --line:#D8DDE6;
+  --navy:#0B2545; --navy-ink:#FFFFFF; --accent:#0E7C7B; --accent-soft:#E2F1F0;
+  --hi:#B42318; --hi-soft:#FBEAE7; --warn:#B54708; --warn-soft:#FDEFE2; --lo:#6B7280;
+  --ol-bg:#FFFFFF; --ol-chrome:#F3F4F6; --ol-line:#E2E4E8; --ol-blue:#0F6CBD; --ol-sel:#E8F1FB; --ol-ink:#242424; --ol-muted:#616161; --ol-cp:#F4F0FF;
+  --font-display:'Libre Franklin','Segoe UI',Arial,sans-serif;
+  --font-body:'Source Sans 3','Segoe UI',Arial,sans-serif;
+  --font-mono:'IBM Plex Mono',Consolas,'Courier New',monospace;
+  --font-ui:'Segoe UI',system-ui,-apple-system,Arial,sans-serif;
 }
-*{box-sizing:border-box}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0E1420; --surface:#171E2E; --ink:#E9EDF5; --ink-2:#A6AFC2; --line:#2B3548;
+  --navy:#17325E; --navy-ink:#FFFFFF; --accent:#45B8B4; --accent-soft:#163B3A;
+  --hi:#F39289; --hi-soft:#3B201D; --warn:#F3A95F; --warn-soft:#3B2A14; --lo:#8A93A6;
+  --ol-bg:#1C1C1C; --ol-chrome:#2A2A2A; --ol-line:#3B3B3B; --ol-blue:#5AA9EA; --ol-sel:#243A52; --ol-ink:#F1F1F1; --ol-muted:#A8A8A8; --ol-cp:#2C2640;
+  color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0E1420; --surface:#171E2E; --ink:#E9EDF5; --ink-2:#A6AFC2; --line:#2B3548;
+  --navy:#17325E; --navy-ink:#FFFFFF; --accent:#45B8B4; --accent-soft:#163B3A;
+  --hi:#F39289; --hi-soft:#3B201D; --warn:#F3A95F; --warn-soft:#3B2A14; --lo:#8A93A6;
+  --ol-bg:#1C1C1C; --ol-chrome:#2A2A2A; --ol-line:#3B3B3B; --ol-blue:#5AA9EA; --ol-sel:#243A52; --ol-ink:#F1F1F1; --ol-muted:#A8A8A8; --ol-cp:#2C2640;
+  color-scheme:dark }
+
 html,body{height:100%}
-body{margin:0;background:var(--white);color:var(--ink);font-family:Aptos,Calibri,"Segoe UI",Arial,sans-serif;font-size:var(--fs);line-height:1.45}
-h1,h2,h3{margin:0 0 .4em;color:var(--navy);line-height:1.15;font-weight:700}
-h1{font-size:var(--fs-h1)}
-h2{font-size:var(--fs-h2)}
-h3{font-size:var(--fs-h3)}
-p{margin:0 0 .8em}
-ul,ol{margin:0 0 .8em;padding-left:1.2em}
-li{margin:.2em 0}
-a{color:var(--link)}
-b{font-weight:700}
-.eyebrow{font-size:var(--fs-sm);font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin-bottom:.4em}
-.rule{width:64px;height:5px;background:var(--red);margin:4px 0 clamp(14px,1.4vw,24px)}
-.muted{color:var(--grey)}
-.small{font-size:var(--fs-sm)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);line-height:1.45;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 
-/* chrome */
-.top{position:fixed;top:0;left:0;right:0;height:56px;background:var(--navy);color:#fff;z-index:20;display:flex;align-items:center;padding:0 20px;gap:16px}
-.top .brand{font-weight:700;font-size:var(--fs-sm);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.top .brand span{font-weight:400;opacity:.85}
-.top .spacer{flex:1}
-.top .count{font-size:var(--fs-sm);white-space:nowrap}
-.top button{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5);padding:6px 14px;font:inherit;font-size:var(--fs-sm);cursor:pointer;border-radius:2px}
-.top button:hover{background:rgba(255,255,255,.12)}
-.bottom{position:fixed;bottom:0;left:0;right:0;height:64px;background:#fff;border-top:1px solid var(--line);z-index:20;display:flex;align-items:center;gap:16px;padding:0 20px}
-.bottom .bar{flex:1;height:6px;background:var(--light)}
-.bottom .bar i{display:block;height:100%;width:0;background:var(--red);transition:width .25s}
-.bottom .hint{font-size:var(--fs-sm);color:var(--faint);white-space:nowrap}
-.btn{background:var(--navy);color:#fff;border:1px solid var(--navy);padding:.5em 1.1em;font:inherit;font-size:var(--fs-sm);font-weight:700;cursor:pointer;border-radius:2px}
-.btn:hover{background:#013a7a}
-.btn.ghost{background:#fff;color:var(--navy)}
-.btn.ghost:hover{background:var(--light)}
-.btn:disabled{opacity:.4;cursor:default}
-.arrow{position:fixed;top:50%;transform:translateY(-50%);width:52px;height:64px;border:1px solid var(--line);background:#fff;color:var(--navy);font-size:30px;cursor:pointer;z-index:15;border-radius:2px;display:flex;align-items:center;justify-content:center}
-.arrow:hover{background:var(--light)}
-.arrow.l{left:8px}.arrow.r{right:8px}
-.arrow:disabled{opacity:.25;cursor:default}
-@media (max-width:1000px){.arrow{display:none}}
-.stage{position:fixed;top:56px;bottom:64px;left:0;right:0;overflow:auto;background:#fff}
-.slide{display:none;max-width:none;margin:0;padding:clamp(20px,2.2vh,36px) clamp(72px,5vw,120px) clamp(24px,3vh,40px);min-height:100%}
-.slide.on{display:block}
-@media (max-width:1000px){.slide{padding:20px 24px 32px}}
-@media (max-width:760px){.slide{padding:18px 16px 32px}.bottom .hint{display:none}}
+.deck{height:100%;display:grid;grid-template-rows:auto 1fr auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:10px;font-size:13px;color:var(--ink-2);flex-wrap:wrap}
+.tracker{display:flex;gap:6px;flex-wrap:wrap}
+.tracker button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 12px;font-size:12px;letter-spacing:.02em;color:var(--ink-2)}
+.tracker button.on{background:var(--navy);color:var(--navy-ink);border-color:var(--navy)}
+.topbar .tools{display:flex;gap:6px}
+.topbar .tools button{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:4px 10px;font-size:12px}
+.topbar .tools button.on{background:var(--accent-soft);border-color:var(--accent);color:var(--ink)}
 
-/* contents overlay */
-.overlay{position:fixed;inset:0;background:rgba(0,43,92,.97);color:#fff;z-index:30;display:none;overflow:auto;padding:70px 40px 40px}
-.overlay.on{display:block}
-.overlay h2{color:#fff;margin-bottom:20px}
-.overlay .part{font-size:var(--fs-sm);font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#F4A6B0;margin:18px 0 8px}
-.overlay .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px}
-.overlay button{text-align:left;background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.25);padding:10px 12px;font:inherit;font-size:var(--fs);cursor:pointer;border-radius:2px}
-.overlay button:hover{background:rgba(255,255,255,.18)}
-.overlay button.seen{border-left:4px solid #7FD18C}
-.overlay button.cur{background:#fff;color:var(--navy);font-weight:700}
-.overlay .close{position:absolute;top:14px;right:20px;background:transparent;border:1px solid rgba(255,255,255,.5);color:#fff;padding:6px 14px;font:inherit;cursor:pointer;border-radius:2px}
+.stagewrap{min-height:0;display:grid;grid-template-columns:1fr;gap:12px;align-items:center;justify-items:center}
+.stagewrap.notes-open{grid-template-columns:minmax(0,1fr) minmax(220px,320px)}
+.stage{container-type:inline-size;width:min(100%, calc((100vh - 110px) * 16 / 9));max-width:100%;aspect-ratio:16/9;background:var(--surface);border:1px solid var(--line);box-shadow:0 10px 30px rgba(10,20,40,.08);position:relative;overflow:hidden}
+.slide{position:absolute;inset:0;display:none;grid-template-rows:auto 1fr auto;gap:1.1em;padding:2.4em 3.2em 1.6em;font-size:clamp(9px,1.5cqi,21px);overflow:auto;min-width:0}
+.slide.active{display:grid;animation:fade .25s ease}
+@keyframes fade{from{opacity:.4}to{opacity:1}}
+.slide>header .eyebrow{font-size:.72em;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:600;margin:0 0 .35em}
+.slide>header h2{font-family:var(--font-display);font-weight:600;font-size:1.85em;line-height:1.18;margin:0;text-wrap:balance;max-width:28em}
+.slide>header h2 .thin{font-weight:500;color:var(--ink-2)}
+.slide>.body{min-height:0;min-width:0}
+.slide>footer{display:flex;justify-content:space-between;gap:1em;font-size:.68em;color:var(--ink-2);border-top:1px solid var(--line);padding-top:.7em}
+.slide>footer .num{font-variant-numeric:tabular-nums;white-space:nowrap}
+p{margin:0}
+.lead{font-size:1.1em;max-width:36em;color:var(--ink)}
+.muted{color:var(--ink-2)}
+.small{font-size:.82em}
+ul.clean{list-style:none;padding:0;margin:0;display:grid;gap:.45em}
+ul.clean li{padding-left:1.1em;position:relative}
+ul.clean li::before{content:"";position:absolute;left:0;top:.62em;width:.45em;height:.45em;background:var(--accent);border-radius:1px}
+.cols{display:grid;gap:1.4em;min-width:0}
+.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.cols-21{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}
+.cols-12{grid-template-columns:minmax(0,1fr) minmax(0,1.6fr)}
+.cols>*{min-width:0}
+.panel{border:1px solid var(--line);border-radius:4px;padding:1em 1.1em;background:var(--surface)}
+.panel h3{font-family:var(--font-display);font-size:.95em;margin:0 0 .5em;font-weight:600}
+.takeaway{background:var(--navy);color:var(--navy-ink);padding:1em 1.2em;border-left:.35em solid var(--accent);border-radius:2px}
+.takeaway strong{font-family:var(--font-display);font-weight:600;display:block;margin-bottom:.25em;font-size:.9em;letter-spacing:.06em;text-transform:uppercase;opacity:.85}
+.kicker{font-family:var(--font-display);font-size:2.6em;font-weight:700;line-height:1;color:var(--navy)}
+.step{display:grid;grid-template-columns:2.2em 1fr;gap:.7em;align-items:start}
+.step .n{font-family:var(--font-display);font-weight:700;font-size:1.3em;color:var(--accent);line-height:1.2}
+.chip{display:inline-flex;align-items:center;gap:.35em;border-radius:999px;padding:.15em .7em;font-size:.78em;font-weight:600;letter-spacing:.02em}
+.chip.hi{background:var(--hi-soft);color:var(--hi)}
+.chip.warn{background:var(--warn-soft);color:var(--warn)}
+.chip.ok{background:var(--accent-soft);color:var(--accent)}
+.chip.lo{background:var(--bg);color:var(--lo);border:1px solid var(--line)}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:4px;padding:.4em .9em;font-size:.85em;font-weight:600;display:inline-flex;align-items:center;gap:.4em}
+.btn.primary{background:var(--navy);color:var(--navy-ink);border-color:var(--navy)}
+.btn.on{background:var(--accent-soft);border-color:var(--accent)}
+.btn:disabled{opacity:.5;cursor:default}
+.prompt{display:grid;grid-template-columns:1fr auto;gap:.6em;align-items:center;border:1px solid var(--line);border-left:.3em solid var(--accent);background:var(--bg);padding:.6em .8em;border-radius:3px;font-family:var(--font-mono);font-size:.78em;line-height:1.4}
+.prompt .copy{font-family:var(--font-body);font-size:.95em;padding:.25em .6em;border:1px solid var(--line);background:var(--surface);border-radius:3px;white-space:nowrap}
+.prompt .copy.done{background:var(--accent-soft);border-color:var(--accent)}
+table.data{border-collapse:collapse;width:100%;font-size:.82em}
+table.data th,table.data td{text-align:left;padding:.45em .6em;border-bottom:1px solid var(--line);vertical-align:top}
+table.data th{font-size:.78em;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);font-weight:600}
+table.data td.d{font-variant-numeric:tabular-nums;white-space:nowrap}
+.tablewrap{overflow-x:auto}
+.note{font-size:.78em;color:var(--ink-2);border-top:1px dashed var(--line);padding-top:.5em;margin-top:.6em}
+.src a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent-soft)}
+.src a:hover{border-bottom-color:var(--accent)}
+.illus{font-size:.68em;color:var(--ink-2);display:flex;gap:.6em;align-items:center;flex-wrap:wrap}
+.illus .tag{border:1px solid var(--line);border-radius:3px;padding:.1em .5em;font-weight:600;letter-spacing:.04em;text-transform:uppercase;font-size:.9em}
 
-/* content blocks */
-.card{background:#fff;border:1px solid var(--line);border-top:5px solid var(--navy);padding:var(--pad) calc(var(--pad) + 4px)}
-.card.red{border-top-color:var(--red)}
-.card.navy{background:var(--navy);color:#fff;border-color:var(--navy)}
-.card.navy h3{color:#fff}
-.card.navy .muted{color:#D7E0EC}
-.card.grey{background:var(--light);border-top-color:var(--grey)}
-.grid{display:grid;gap:clamp(14px,1.4vw,26px)}
-.g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)}
-@media (max-width:900px){.g3{grid-template-columns:1fr 1fr}}
-@media (max-width:640px){.g2,.g3{grid-template-columns:1fr}}
-
-table{width:100%;border-collapse:collapse;font-size:var(--fs-tbl);margin:0 0 .9em;background:#fff}
-th,td{padding:.5em .7em;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
-th{background:var(--navy);color:#fff;font-weight:700}
-tr:nth-child(even) td{background:var(--light)}
-td.c,th.c{text-align:center}
-.band-Low{background:var(--low)!important;color:var(--low-ink)!important;font-weight:700}
-.band-Medium{background:var(--med)!important;color:var(--med-ink)!important;font-weight:700}
-.band-High{background:var(--high)!important;color:var(--high-ink)!important;font-weight:700}
-.tbl-wrap{overflow:auto}
-table.hover td.hl, table.hover th.hl{outline:3px solid var(--red);outline-offset:-3px}
-td.mark{position:relative}
-td.mark b.tag{position:absolute;top:2px;right:4px;font-size:.75em;padding:1px 5px;background:var(--navy);color:#fff}
-td.mark b.tag.r{background:var(--red)}
-
-.strip{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:14px}
-@media (max-width:900px){.strip{grid-template-columns:repeat(4,1fr)}}
-@media (max-width:560px){.strip{grid-template-columns:repeat(2,1fr)}}
-.step{border:1px solid var(--line);padding:.7em .8em;background:#fff;cursor:pointer;font-size:var(--fs-sm);border-top:5px solid var(--line)}
-.step:hover{background:var(--light)}
-.step .n{font-weight:700;color:var(--faint);font-size:.9em}
-.step b{display:block;font-size:1.05em;margin:2px 0;color:var(--navy)}
-.step.you{border-top-color:var(--navy)} .step.you .n{color:var(--navy)}
-.step.rule-step{background:var(--navy);color:#fff;border-color:var(--navy)} .step.rule-step .n{color:#F4A6B0} .step.rule-step b{color:#fff} .step.rule-step .muted{color:#D7E0EC}
-.step.open{outline:3px solid var(--red)}
-.stepinfo{min-height:52px}
-
-label.f{display:block;font-size:var(--fs-sm);font-weight:700;color:var(--grey);margin:.6em 0 .25em}
-select,input[type=text]{width:100%;padding:.45em .6em;border:1px solid #9A9A9A;border-radius:2px;background:#fff;color:var(--ink);font:inherit;font-size:var(--fs-sm)}
-select:focus,input:focus{outline:2px solid var(--navy);outline-offset:1px}
-.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
-
-.sentence{font-size:clamp(22px,1.9vw,34px);line-height:1.45;background:var(--navy);color:#fff;padding:var(--pad) calc(var(--pad) + 4px)}
-.sentence em{font-style:normal;color:#F4A6B0;font-weight:700}
-
-.chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{font-size:var(--fs-sm);padding:.3em .7em;border:1px solid var(--line);background:#fff;color:var(--faint)}
-.chip.on{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:700}
-.chip.gov{border-style:dashed}
-#pm-out{display:grid;grid-template-columns:repeat(3,1fr);gap:6px clamp(14px,1.5vw,28px);align-content:start}
-#pm-out .chip{font-size:clamp(13px,1.05vw,20px);padding:.25em .6em}
-#pm-out .cg h4{font-size:clamp(13px,1.05vw,20px)}
-@media (max-width:1300px){#pm-out{grid-template-columns:1fr 1fr}}
-@media (max-width:760px){#pm-out{grid-template-columns:1fr}}
-.cg{margin:4px 0}
-.cg h4{margin:0 0 6px;font-size:var(--fs-sm);font-weight:700;color:var(--grey)}
-
-.calc{display:grid;grid-template-columns:clamp(320px,27vw,440px) 1fr;gap:clamp(16px,1.6vw,28px)}
-@media (max-width:860px){.calc{grid-template-columns:1fr}}
-.steps{list-style:none;padding:0;margin:0}
-.steps li{display:grid;grid-template-columns:2.1em 1fr auto;gap:.6em;align-items:center;padding:.5em .6em;border-bottom:1px solid var(--line)}
-.steps li .n{width:1.7em;height:1.7em;background:var(--navy);color:#fff;font-weight:700;font-size:.9em;display:flex;align-items:center;justify-content:center}
-.steps li .r{font-weight:700;white-space:nowrap}
-.pill{display:inline-block;padding:.2em .7em;font-size:var(--fs-sm);font-weight:700}
-.result{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px}
-.result .big{flex:1;min-width:150px;padding:.8em 1em;border:1px solid var(--line);border-top:5px solid var(--navy)}
-.result .big .k{font-size:var(--fs-sm);font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
-.result .big .v{font-size:clamp(28px,2.3vw,44px);margin-top:4px;color:var(--navy);font-weight:700}
-.flag{border-left:5px solid var(--warn);background:var(--light);padding:.6em .8em;font-size:var(--fs-sm);margin-top:10px}
-.flag.bad{border-color:var(--bad)}
-.flag.ok{border-color:var(--ok)}
-.mini{font-size:var(--fs-sm);margin-top:12px}
-.mini td,.mini th{padding:.3em .4em;text-align:center}
-.mini th:first-child,.mini td:first-child{text-align:left}
-
-details{border:1px solid var(--line);border-left:5px solid var(--red);background:#fff;margin:10px 0;padding:0 var(--pad)}
-summary{cursor:pointer;padding:.65em 0;font-weight:700;color:var(--navy);list-style:none;display:flex;justify-content:space-between;gap:12px}
-summary::after{content:"+";color:var(--red);font-weight:700}
-details[open] summary::after{content:"−"}
-details .body{padding:0 0 .8em;color:var(--grey)}
-
-.check{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media (max-width:900px){.check{grid-template-columns:1fr}}
-.check label{display:flex;gap:.7em;align-items:flex-start;padding:.6em .8em;border:1px solid var(--line);background:#fff;margin:0;cursor:pointer}
-.check input{width:1.2em;height:1.2em;margin-top:.15em;flex:none;accent-color:var(--navy)}
-.check label.done{background:var(--low);color:var(--low-ink);border-color:var(--low)}
-
-.q{margin:1em 0}
-.q .opts{display:grid;gap:8px;margin-top:8px}
-.q .opts button{text-align:left;background:#fff;border:1px solid #9A9A9A;padding:.55em .8em;font:inherit;font-size:var(--fs);color:var(--ink);cursor:pointer;border-radius:2px}
-.q .opts button:hover{border-color:var(--navy)}
-.q .opts button.right{background:var(--low);border-color:var(--ok);color:var(--low-ink);font-weight:700}
-.q .opts button.wrong{background:var(--high);border-color:var(--bad);color:var(--high-ink)}
-.q .why{font-size:var(--fs-sm);color:var(--grey);margin-top:8px;display:none}
-.q.answered .why{display:block}
-.score{font-size:var(--fs-h3);font-weight:700;color:var(--navy);margin-top:12px}
-
-.cover{padding-top:clamp(40px,8vh,110px)}
-.cover p.lead{font-size:clamp(20px,1.9vw,34px);color:var(--grey);max-width:60ch}
-.cover .meta{margin-top:clamp(30px,5vh,60px);font-size:var(--fs-sm);color:var(--faint);border-top:1px solid var(--line);padding-top:14px;display:flex;gap:28px;flex-wrap:wrap}
-.footer{font-size:var(--fs-sm);color:var(--faint);padding-top:12px;border-top:1px solid var(--line);margin-top:16px}
-@media print{.top,.bottom,.arrow,.overlay{display:none}.stage{position:static;overflow:visible}.slide{display:block;break-after:page;min-height:0}}
+/* Outlook recreation */
+.ol{font-family:var(--font-ui);background:var(--ol-bg);color:var(--ol-ink);border:1px solid var(--ol-line);border-radius:6px;overflow:hidden;font-size:.74em;display:grid;grid-template-rows:auto 1fr;min-width:0;box-shadow:0 4px 18px rgba(0,0,0,.08)}
+.ol-top{display:flex;align-items:center;gap:.8em;padding:.45em .9em;background:var(--ol-chrome);border-bottom:1px solid var(--ol-line)}
+.ol-top .brand{font-weight:600}
+.ol-top .search{flex:1;background:var(--ol-bg);border:1px solid var(--ol-line);border-radius:4px;padding:.25em .7em;color:var(--ol-muted);min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.ol-cp{display:inline-flex;align-items:center;gap:.35em;border:1px solid var(--ol-line);background:var(--ol-bg);border-radius:4px;padding:.25em .6em;font-weight:600;position:relative}
+.ol-cp .sp{color:var(--ol-blue)}
+.ol-cp .caret{color:var(--ol-muted);font-size:.8em}
+.ol-main{display:grid;grid-template-columns:7em minmax(0,1.25fr) minmax(0,1fr);min-height:0}
+.ol-nav{border-right:1px solid var(--ol-line);padding:.5em 0;background:var(--ol-chrome)}
+.ol-nav div{padding:.3em .9em;color:var(--ol-muted)}
+.ol-nav div.on{color:var(--ol-ink);font-weight:600;background:var(--ol-sel);border-left:2px solid var(--ol-blue)}
+.ol-list{border-right:1px solid var(--ol-line);display:grid;grid-template-rows:auto 1fr;min-height:0}
+.ol-list .tabs{display:flex;gap:1em;padding:.5em .9em;border-bottom:1px solid var(--ol-line);align-items:center}
+.ol-list .tabs b{border-bottom:2px solid var(--ol-blue);padding-bottom:.2em}
+.ol-list .tabs .filter{margin-left:auto;color:var(--ol-blue);font-weight:600;display:inline-flex;gap:.3em;align-items:center;position:relative}
+.ol-list .msgs{overflow:auto;min-height:0}
+.msg{display:grid;grid-template-columns:1.6em minmax(0,1fr) auto;gap:.5em;padding:.5em .8em;border-bottom:1px solid var(--ol-line);cursor:pointer;align-items:start}
+.msg:hover{background:var(--ol-chrome)}
+.msg.sel{background:var(--ol-sel);box-shadow:inset 3px 0 0 var(--ol-blue)}
+.msg .av{width:1.5em;height:1.5em;border-radius:50%;background:var(--ol-blue);color:#fff;font-size:.75em;display:grid;place-items:center;font-weight:600;margin-top:.15em}
+.msg .av.ext{background:#8E562E}
+.msg .from{font-weight:600;display:flex;align-items:center;gap:.4em;min-width:0}
+.msg .from span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.msg .subj{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.msg .prev{color:var(--ol-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.95em}
+.msg .prev.cp{color:var(--ol-ink)}
+.msg .prev.cp::before{content:"✦ ";color:var(--ol-blue)}
+.msg .time{color:var(--ol-muted);font-size:.9em;white-space:nowrap;font-variant-numeric:tabular-nums}
+.pri{display:inline-grid;place-items:center;width:1.25em;height:1.25em;border-radius:3px;font-size:.85em;font-weight:700;flex:none}
+.pri.hi{background:#FDE7E7;color:#C4262E}
+.pri.lo{background:#EAEAEA;color:#6A6A6A}
+:root[data-theme="dark"] .pri.hi{background:#4A1F22;color:#FF8A8A}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .pri.hi{background:#4A1F22;color:#FF8A8A}}
+.ol-read{padding:.9em 1em;overflow:auto;min-height:0;display:grid;gap:.7em;align-content:start}
+.ol-read h4{margin:0;font-size:1.15em;font-weight:600}
+.ol-read .meta{color:var(--ol-muted);font-size:.9em}
+.cpbox{background:var(--ol-cp);border:1px solid var(--ol-line);border-radius:6px;padding:.6em .8em;font-size:.95em}
+.cpbox .h{font-weight:600;display:flex;align-items:center;gap:.4em;margin-bottom:.25em}
+.cpbox .h .sp{color:var(--ol-blue)}
+.cpbox .more{color:var(--ol-blue);font-weight:600;cursor:pointer;font-size:.9em}
+.cpbox ol{margin:.3em 0 0 1.2em;padding:0}
+.cpbox .cite{display:inline-grid;place-items:center;min-width:1.3em;height:1.3em;border-radius:50%;background:var(--ol-blue);color:#fff;font-size:.7em;font-weight:700;vertical-align:middle}
+.ol-read .att{display:inline-flex;align-items:center;gap:.5em;border:1px solid var(--ol-line);border-radius:4px;padding:.35em .6em;background:var(--ol-chrome)}
+.ol-read .body{white-space:pre-line}
+.dropdown{position:absolute;top:110%;right:0;background:var(--ol-bg);border:1px solid var(--ol-line);border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.18);padding:.35em;min-width:11em;z-index:5;font-weight:400;color:var(--ol-ink);text-align:left}
+.dropdown div{padding:.35em .7em;border-radius:4px;white-space:nowrap}
+.dropdown div.on{background:var(--ol-sel);font-weight:600}
+.dropdown div.sep{border-top:1px solid var(--ol-line);padding:0;margin:.2em 0}
+.callout{position:relative;border:1px solid var(--accent);background:var(--accent-soft);border-radius:4px;padding:.5em .7em;font-size:.8em}
+.callout.hi{border-color:var(--hi);background:var(--hi-soft)}
+.settings{font-family:var(--font-ui);font-size:.74em;background:var(--ol-bg);border:1px solid var(--ol-line);border-radius:6px;overflow:hidden;display:grid;grid-template-columns:8em 1fr;min-width:0}
+.settings .side{background:var(--ol-chrome);border-right:1px solid var(--ol-line);padding:.6em 0}
+.settings .side div{padding:.35em .9em;color:var(--ol-muted)}
+.settings .side div.on{background:var(--ol-sel);color:var(--ol-ink);font-weight:600;border-left:2px solid var(--ol-blue)}
+.settings .pane{padding:.9em 1em;display:grid;gap:.6em;align-content:start}
+.settings .pane h5{margin:0;font-size:1.1em}
+.toggle{display:flex;align-items:center;gap:.6em}
+.toggle .sw{width:2.4em;height:1.25em;border-radius:1em;background:var(--ol-blue);position:relative;flex:none}
+.toggle .sw::after{content:"";position:absolute;top:.15em;right:.15em;width:.95em;height:.95em;border-radius:50%;background:#fff}
+.toggle .sw.off{background:#9A9A9A}
+.toggle .sw.off::after{right:auto;left:.15em}
+.rule-in{border:1px solid var(--ol-line);border-radius:4px;padding:.4em .6em;background:var(--ol-bg);display:flex;justify-content:space-between;gap:.5em}
+.rule-in .x{color:var(--ol-muted)}
+.chat{font-family:var(--font-ui);font-size:.74em;background:var(--ol-bg);border:1px solid var(--ol-line);border-radius:6px;display:grid;grid-template-rows:auto 1fr auto;min-height:0;min-width:0}
+.chat .head{padding:.5em .9em;border-bottom:1px solid var(--ol-line);font-weight:600;display:flex;gap:.4em;align-items:center}
+.chat .log{padding:.8em;overflow:auto;display:grid;gap:.7em;align-content:start;min-height:0}
+.chat .u{justify-self:end;background:var(--ol-sel);border-radius:8px 8px 2px 8px;padding:.5em .8em;max-width:90%}
+.chat .a{background:var(--ol-cp);border-radius:8px 8px 8px 2px;padding:.6em .8em;max-width:100%;min-width:0}
+.chat .a table{border-collapse:collapse;width:100%;margin-top:.4em}
+.chat .a th,.chat .a td{text-align:left;padding:.3em .4em;border-bottom:1px solid var(--ol-line);vertical-align:top}
+.chat .a th{font-size:.85em;color:var(--ol-muted)}
+.chat .in{display:flex;gap:.5em;padding:.6em .8em;border-top:1px solid var(--ol-line)}
+.chat .in .box{flex:1;border:1px solid var(--ol-line);border-radius:4px;padding:.35em .6em;color:var(--ol-muted);min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.chat .dots{color:var(--ol-muted)}
+.hl{background:var(--warn-soft);outline:2px solid var(--warn);border-radius:2px}
+.notes{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:14px;font-size:13px;align-self:stretch;overflow:auto;max-height:calc(100vh - 110px)}
+.notes h4{margin:0 0 8px;font-family:var(--font-display);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.notes p{margin:0 0 8px;color:var(--ink)}
+.notes .t{font-variant-numeric:tabular-nums;color:var(--ink-2);font-size:12px}
+.bar{display:flex;align-items:center;gap:10px;padding-block:10px;font-size:13px;color:var(--ink-2)}
+.bar button{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:6px 12px}
+.bar .counter{font-variant-numeric:tabular-nums;min-width:4.5em;text-align:center}
+.bar .prog{flex:1;height:4px;background:var(--line);border-radius:2px;overflow:hidden}
+.bar .prog i{display:block;height:100%;background:var(--accent);width:0;transition:width .25s}
+.bar .hint{white-space:nowrap}
+.help[hidden],.notes[hidden]{display:none!important}
+.help{position:fixed;inset:0;background:rgba(10,20,40,.55);display:grid;place-items:center;z-index:20;padding:16px}
+.help .card{background:var(--surface);color:var(--ink);border-radius:6px;padding:20px 24px;max-width:420px;width:100%;font-size:14px}
+.help .card h3{margin:0 0 10px;font-family:var(--font-display)}
+.help .card dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0}
+.help .card dt{font-family:var(--font-mono);font-size:12px;background:var(--bg);border:1px solid var(--line);border-radius:3px;padding:1px 6px;text-align:center}
+.help .card dd{margin:0}
+.title-slide{background:var(--navy);color:var(--navy-ink)}
+.title-slide>footer{border-top-color:rgba(255,255,255,.25);color:rgba(255,255,255,.75)}
+.title-slide .eyebrow{color:#9BD9D6}
+.title-slide h1{font-family:var(--font-display);font-size:3em;font-weight:700;line-height:1.08;margin:0;text-wrap:balance;max-width:14em}
+.title-slide .sub{font-size:1.15em;opacity:.9;max-width:34em}
+.title-slide .meta{display:flex;gap:2.5em;flex-wrap:wrap;font-size:.8em;opacity:.85;margin-top:1.2em}
+.title-slide .meta b{display:block;font-size:.8em;letter-spacing:.12em;text-transform:uppercase;opacity:.75;margin-bottom:.2em}
+.divider{background:var(--navy);color:var(--navy-ink)}
+.divider .kicker{color:#9BD9D6;font-size:5em}
+.divider h2{color:var(--navy-ink)}
+.divider>footer{border-top-color:rgba(255,255,255,.25);color:rgba(255,255,255,.75)}
+.three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.2em}
+.three .card{border-top:.3em solid var(--accent);padding-top:.8em;display:grid;gap:.5em;align-content:start}
+.three .card .n{font-family:var(--font-display);font-size:2em;font-weight:700;color:var(--navy);line-height:1}
+.three .card h3{font-family:var(--font-display);font-size:1.05em;margin:0;font-weight:600}
+.three .card p{font-size:.9em;color:var(--ink-2)}
+.three .card .q{font-family:var(--font-mono);font-size:.74em;background:var(--bg);border:1px solid var(--line);padding:.4em .6em;border-radius:3px}
+.checklist{display:grid;gap:.4em;font-size:.9em}
+.checklist label{display:flex;gap:.6em;align-items:start;cursor:pointer}
+.checklist input{margin-top:.3em;accent-color:var(--accent)}
+.rules{display:grid;gap:.5em}
+.rule{display:grid;grid-template-columns:1fr auto;gap:.6em;align-items:center;border:1px solid var(--line);border-radius:3px;padding:.45em .7em;background:var(--surface);font-size:.86em}
+.rule code{font-family:var(--font-mono);font-size:.92em}
+.rule .copy{font-size:.85em;padding:.2em .55em;border:1px solid var(--line);border-radius:3px;background:var(--bg);white-space:nowrap}
+.rule .copy.done{background:var(--accent-soft);border-color:var(--accent)}
+.legend{display:flex;gap:1.2em;flex-wrap:wrap;font-size:.8em;color:var(--ink-2);align-items:center}
+.hot{position:relative}
+.hot .pin{position:absolute;width:1.5em;height:1.5em;border-radius:50%;background:var(--warn);color:#fff;font-weight:700;font-size:.75em;display:grid;place-items:center;box-shadow:0 0 0 .25em var(--warn-soft);cursor:help;z-index:3}
+.pinlist{display:grid;gap:.4em;font-size:.82em}
+.pinlist div{display:grid;grid-template-columns:1.6em 1fr;gap:.5em;align-items:start}
+.pinlist b{width:1.4em;height:1.4em;border-radius:50%;background:var(--warn);color:#fff;font-size:.8em;display:grid;place-items:center}
+@media (max-width:760px){
+  .stage{aspect-ratio:auto;height:calc(100vh - 120px);width:100%}
+  .slide{font-size:12px;padding:1.4em 1.2em 1.2em}
+  .cols-2,.cols-3,.cols-21,.cols-12,.three{grid-template-columns:1fr}
+  .ol-main{grid-template-columns:1fr}
+  .ol-nav{display:none}
+  .ol-read{border-top:1px solid var(--ol-line)}
+  .settings{grid-template-columns:1fr}
+  .stagewrap.notes-open{grid-template-columns:1fr}
+  .notes{max-height:200px}
+  .bar .hint{display:none}
+  .title-slide h1{font-size:2.2em}
+}
+.flow{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr);gap:1.4em;align-items:start}
+.flow .arrow{font-size:2.2em;color:var(--line);line-height:1;align-self:center;padding-top:3em}
+.stepcol{display:grid;gap:.6em;align-content:start;min-width:0}
+.stepcol h3{font-family:var(--font-display);font-size:1.3em;font-weight:600;margin:0;line-height:1.15}
+.stepcol p{font-size:.92em;color:var(--ink-2);min-height:3.2em}
+.mini{font-family:var(--font-ui);font-size:.8em;background:var(--ol-bg);color:var(--ol-ink);border:1px solid var(--ol-line);border-radius:8px;padding:.9em 1em;box-shadow:0 8px 24px rgba(0,0,0,.09);display:grid;gap:.7em;align-content:start;min-height:12.5em}
+.menu{display:grid;border:1px solid var(--ol-line);border-radius:6px;padding:.35em;background:var(--ol-bg)}
+.menu div{padding:.45em .8em;border-radius:4px;display:flex;align-items:center;gap:.5em}
+.menu .on{background:var(--ol-sel);font-weight:600}
+.circ{display:inline-grid;place-items:center;width:1.2em;height:1.2em;border:1.5px solid currentColor;border-radius:50%;font-size:.85em}
+@media (max-width:760px){.flow{grid-template-columns:1fr}.flow .arrow{display:none}.stepcol p{min-height:0}}
 </style>
-</head>
-<body>
-
-<header class="top">
-  <div class="brand">Privacy Residual Risk Decision Rule <span>· Training guide</span></div>
-  <div class="spacer"></div>
-  <div class="count" id="count"></div>
-  <button type="button" id="toc">Contents</button>
+<div class="deck">
+<header class="topbar">
+  <div class="tracker" id="tracker">
+    <button data-go="title">Start</button>
+    <button data-go="prioritize">1 · Prioritize</button>
+    <button data-go="summarize">2 · Summarize</button>
+    <button data-go="find">3 · Find what's buried</button>
+    <button data-go="rules-of-use">Rules</button>
+    <button data-go="appendix">Appendix</button>
+  </div>
+  <div class="tools">
+    <button id="btn-notes" title="Speaker notes (N)">Notes</button>
+    <button id="btn-full" title="Fullscreen (F)">Fullscreen</button>
+    <button id="btn-help" title="Keys (?)">?</button>
+  </div>
 </header>
 
-<button class="arrow l" id="prevA" type="button" aria-label="Previous slide">‹</button>
-<button class="arrow r" id="nextA" type="button" aria-label="Next slide">›</button>
+<div class="stagewrap" id="stagewrap">
+<main class="stage" id="stage" aria-live="polite">
 
-<div class="stage" id="stage">
-
-<section class="slide cover" id="cover" data-title="Cover" data-part="Start">
-  <div class="eyebrow">Echelon Insurance Privacy Office · Training guide · Rule v1.1</div>
-  <h1>Applying the Privacy Residual Risk Decision Rule</h1>
-  <div class="rule"></div>
-  <p class="lead">How to score a privacy risk so that anyone with the same facts reaches the same rating. Click through the slides in order; each is short. The calculator in Part 3 lets you try the rule on your own numbers.</p>
-  <div class="meta"><span>Four inputs per risk</span><span>Seven calculation steps</span><span>24 slides, about 30 minutes</span><span>2 November 2026</span></div>
-</section>
-
-<!-- PART 1 -->
-<section class="slide" id="why" data-title="Why a rule" data-part="Part 1 · Understand">
-  <div class="eyebrow">Part 1 · Understand</div>
-  <h2>Same facts, same rating, whoever does the assessment</h2>
-  <div class="rule"></div>
-  <div class="grid g3">
-    <div class="card"><h3>Questionnaires give evidence, not ratings</h3><p class="muted">An answer in a PIA questionnaire tells you what someone says is in place. The rating comes from what you can show.</p></div>
-    <div class="card"><h3>The rule decides one step only</h3><p class="muted">It fixes how inherent risk and controls combine into a residual rating. Scoping, risk identification and the approval table are unchanged.</p></div>
-    <div class="card"><h3>Your judgment still matters</h3><p class="muted">You still decide impact, likelihood, effectiveness and evidence. The rule only stops two analysts combining the same judgments differently.</p></div>
-  </div>
-</section>
-
-<section class="slide" id="process" data-title="Where it sits">
-  <div class="eyebrow">Part 1 · Understand</div>
-  <h2>Where the rule sits in the PIA process</h2>
-  <div class="rule"></div>
-  <p class="muted">Seven steps. The rule takes what you record in steps 3 and 4 and produces step 5. Click a step to read what it involves.</p>
-  <div class="strip" id="strip"></div>
-  <div class="card grey stepinfo" id="stepinfo"><span class="muted">Click a step above.</span></div>
-  <p class="small muted" style="margin-top:12px">Before step 3, resolve any open gates: a missing contract, a transfer assessment not done, a third-party due diligence not completed. A rating does not clear a gate.</p>
-</section>
-
-<!-- PART 2 -->
-<section class="slide" id="six" data-title="The six things you enter" data-part="Part 2 · Enter">
-  <div class="eyebrow">Part 2 · Enter</div>
-  <h2>You enter six things. The workbook does the rest.</h2>
-  <div class="rule"></div>
-  <div class="grid g3">
-    <div class="card"><h3>Once per PIA</h3><ul><li><b>Data class</b>: the most sensitive data in scope</li><li><b>Modifier</b>: scale or vulnerable group, if either applies</li></ul></div>
-    <div class="card"><h3>For each risk</h3><ul><li><b>Inherent impact</b>: 1 to 5</li><li><b>Inherent likelihood</b>: 1 to 5</li><li><b>Control effectiveness</b>: 1 to 5</li><li><b>Evidence status</b>: Supported, Partially supported, Not verified</li></ul><p class="small muted">You also name the control you relied on, from the catalogue. That is a record, not a score.</p></div>
-    <div class="card navy"><h3>Calculated for you</h3><ul><li>Inherent band</li><li>Likelihood reduction</li><li>Residual likelihood and band</li><li>ERM level</li><li>PIA rating, signatory, review cycle</li></ul></div>
-  </div>
-</section>
-
-<section class="slide" id="statement" data-title="Write the risk clearly">
-  <div class="eyebrow">Part 2 · Enter</div>
-  <h2>Before you score: write the risk clearly</h2>
-  <div class="rule"></div>
-  <p class="muted">Fill in the four parts and watch the statement form. If you cannot fill the harm, the risk is probably not material. If one sentence holds two events, split it into two rows.</p>
-  <div class="grid g2">
-    <div>
-      <label class="f" for="b1">Cause</label><input type="text" id="b1" placeholder="the vendor stores payee bank account numbers and its support staff can access them">
-      <label class="f" for="b2">Event</label><input type="text" id="b2" placeholder="an unauthorized disclosure">
-      <label class="f" for="b3">Individuals</label><input type="text" id="b3" placeholder="claimants">
-      <label class="f" for="b4">Harm</label><input type="text" id="b4" placeholder="financial fraud and identity harm">
-    </div>
-    <div>
-      <div class="sentence" id="sentence"></div>
-      <div class="card" style="margin-top:14px"><h3>Three rules</h3><ul><li>One row per distinct risk</li><li>Split a risk when the cause, the people affected, the control or the harm differs</li><li>Score one gap once; if two rows share a gap, the rationale says which row carries it</li></ul></div>
+<section class="slide title-slide" id="title" data-time="0:00">
+  <header><p class="eyebrow">Legal &amp; Compliance · Team briefing · 15 minutes</p></header>
+  <div class="body" style="display:grid;align-content:center;gap:1em">
+    <h1>Using Copilot to manage your Outlook inbox</h1>
+    <p class="sub">Three jobs Copilot can do in your mailbox today: tell you what to read first, read it for you, and find what is buried. One Monday morning, shown end to end.</p>
+    <div class="meta">
+      <div><b>Audience</b>20 Legal &amp; Compliance professionals, most new to Copilot</div>
+      <div><b>Format</b>Live demo in a seeded mailbox, prompt card to take away</div>
+      <div><b>Requires</b>Microsoft 365 Copilot licence · new Outlook</div>
     </div>
   </div>
+  <footer><span>Internal training material · Demo mailbox contains fictional, sanitized content</span><span class="num">1 / 14</span></footer>
 </section>
 
-<section class="slide" id="dataclass" data-title="Data class">
-  <div class="eyebrow">PIA setting 1 of 2</div>
-  <h2>The data class sets the minimum impact</h2>
-  <div class="rule"></div>
-  <div class="tbl-wrap"><table>
-    <tr><th>Most sensitive data in scope</th><th>Minimum inherent impact</th></tr>
-    <tr><td>Public or effectively de-identified information</td><td>1 Insignificant</td></tr>
-    <tr><td>Basic contact information, mostly business contact details</td><td>2 Minor</td></tr>
-    <tr><td>Ordinary personal information, policy and non-injury claims details</td><td>3 Moderate</td></tr>
-    <tr><td>Highly Confidential: banking, licence, SIN, health, injury claims, underwriting or credit decisions</td><td>4 Major</td></tr>
-    <tr><td>Identity-takeover combinations, biometrics, at-risk location data, criminal or immigration status, children’s data</td><td>5 Extreme</td></tr>
-  </table></div>
-  <p class="muted">Pick the most sensitive data element anywhere in the processing. If you score a risk below the minimum, the sheet flags it. That is allowed when the harm is not exposure of that data (late deletion, an unclear notice, loss of control). Say so in the rationale, because a reviewer will see the flag.</p>
-</section>
-
-<section class="slide" id="modifier" data-title="Modifier">
-  <div class="eyebrow">PIA setting 2 of 2</div>
-  <h2>The modifier moves the band up one step</h2>
-  <div class="rule"></div>
-  <div class="grid g3">
-    <div class="card"><h3>Scale</h3><p>More than 10,000 individuals affected.</p><p class="small muted">Count people, not records. If the questionnaire gives records, say what you assumed.</p></div>
-    <div class="card"><h3>Vulnerable group</h3><p>The people affected are mostly vulnerable: minors, claimants in crisis.</p><p class="small muted">“Mostly” is the test. Some vulnerable people in a general population does not qualify.</p></div>
-    <div class="card navy"><h3>How it applies</h3><ul><li>Set once for the whole PIA</li><li>One step only, even if both apply</li><li>Low to Medium, Medium to High, High stays High</li><li>Applied at the inherent stage and again at the residual stage</li></ul></div>
-  </div>
-  <p class="muted" style="margin-top:14px">Scale and vulnerability describe the processing, not the controls, so good controls do not remove the modifier. A large Highly Confidential initiative therefore stays High at residual; the controls decide the action list, not the band. This is deliberate policy, confirmed by the Privacy Director.</p>
-</section>
-
-<section class="slide" id="impact" data-title="Input 1 · Impact">
-  <div class="eyebrow">Input 1 of 4</div>
-  <h2>Inherent impact: the worst credible harm to one person</h2>
-  <div class="rule"></div>
-  <div class="tbl-wrap"><table>
-    <tr><th>Level</th><th>Harm to the most exposed person</th><th>Typical data</th></tr>
-    <tr><td>1 Insignificant</td><td>No discernible harm; trivial, immediately reversible inconvenience</td><td>Public or de-identified</td></tr>
-    <tr><td>2 Minor</td><td>Limited concern or short-lived loss of control; readily remedied</td><td>Basic contact details</td></tr>
-    <tr><td>3 Moderate</td><td>Material distress, financial inconvenience or loss of privacy; reversible with effort</td><td>Ordinary personal information</td></tr>
-    <tr><td>4 Major</td><td>Serious financial, identity, physical or discriminatory harm that is difficult to reverse</td><td>Banking, licence, SIN, health</td></tr>
-    <tr><td>5 Extreme</td><td>Catastrophic or widespread harm to safety, livelihood or fundamental rights</td><td>Identity-takeover sets, biometrics, children</td></tr>
-  </table></div>
-  <p class="muted">Score before controls. “Credible” means a plausible outcome given the data, the recipients and realistic misuse, not a theoretical worst case. Use the data column as an anchor, not a lookup: bank details usually mean Major, but a risk about late deletion of ordinary data is Moderate even in a Highly Confidential PIA. Impact does not change at the residual stage, so this score carries all the way through.</p>
-</section>
-
-<section class="slide" id="likelihood" data-title="Input 2 · Likelihood">
-  <div class="eyebrow">Input 2 of 4</div>
-  <h2>Inherent likelihood: how likely without the controls</h2>
-  <div class="rule"></div>
-  <div class="tbl-wrap"><table>
-    <tr><th>Level</th><th>Meaning</th><th>Signs you would see</th></tr>
-    <tr><td>1 Rare</td><td>Only in exceptional circumstances</td><td>Internal use, few users, few people affected</td></tr>
-    <tr><td>2 Unlikely</td><td>Could happen, not expected</td><td>Limited sharing, mature process</td></tr>
-    <tr><td>3 Possible</td><td>Might happen</td><td>Vendor involved, manual handling, new process</td></tr>
-    <tr><td>4 Likely</td><td>Will probably happen</td><td>Cross-border transfer, sub-processors, broad access, new use</td></tr>
-    <tr><td>5 Almost certain</td><td>Expected to happen</td><td>A known gap left open</td></tr>
-  </table></div>
-  <p class="muted">Imagine the controls you are about to assess are not there. The commonest error is to score likelihood with the controls already in mind, which counts them twice. Score the raw exposure: who touches the data, how, how often, how new the process is. A new vendor with a cloud host and vendor support access is Likely. A long-running internal process with two users is Rare or Unlikely.</p>
-</section>
-
-<section class="slide" id="control" data-title="Name the control">
-  <div class="eyebrow">Between the inputs</div>
-  <h2>Name the weakest control you are relying on</h2>
-  <div class="rule"></div>
-  <div class="grid g2">
-    <div class="card">
-      <h3>Three steps</h3>
-      <ol>
-        <li><b>List the controls</b> that actually reduce this risk. Ignore controls that address a different risk.</li>
-        <li><b>Pick the weakest one.</b> Where several work together, the weakest sets the reduction for the whole set.</li>
-        <li><b>Choose its name from the catalogue.</b> Put the detail (which system, which vendor) in the rationale.</li>
-      </ol>
+<section class="slide" id="agenda" data-time="0:00 – 1:00">
+  <header><p class="eyebrow">Executive summary</p><h2>Copilot is an assistant that has read your whole inbox <span class="thin">and has no legal judgment</span></h2></header>
+  <div class="body" style="display:grid;grid-template-rows:1fr auto;gap:1.2em">
+    <div class="three">
+      <div class="card"><div class="n">1</div><h3>What do I look at first?</h3><p>Prioritize marks incoming mail High, Normal or Low and says why. Filter to High and start there.</p><div class="q">What in my inbox needs action from me today?</div></div>
+      <div class="card"><div class="n">2</div><h3>Read it for me</h3><p>Summarize a 20-message thread and the attachment inside it. Then spot-check one fact against the source.</p><div class="q">What does this attachment ask of Legal, and by when?</div></div>
+      <div class="card"><div class="n">3</div><h3>What is buried?</h3><p>Ask Copilot Chat for opinion requests you have not answered and deadlines mentioned this month.</p><div class="q">List emails where someone asked me for advice and I haven't replied.</div></div>
     </div>
-    <div class="card navy"><h3>The pathway map checks your choice</h3><ul><li>The control must be on the map for the risk category, or it earns no reduction</li><li>Governance controls (roles, policies, training, inventories, monitoring) support every risk but earn no reduction on their own</li><li>A control typed by hand, outside the catalogue, earns no reduction</li></ul><p class="small muted">The map is an eligibility list, not a checklist. A mapped control that is absent is not scored as None; its absence shows in the effectiveness of the controls you do rely on.</p></div>
+    <div class="takeaway"><strong>The one rule</strong>Copilot sorts, summarizes and finds. You judge. Nothing it produces replaces reading the source before you rely on it or send it.</div>
   </div>
+  <footer><span>Each job ends with a prompt you can copy from the deck or the one-page card</span><span class="num">2 / 14</span></footer>
 </section>
 
-<section class="slide" id="pathway" data-title="Pathway map explorer">
-  <div class="eyebrow">Between the inputs</div>
-  <h2>Which controls count for which risk</h2>
-  <div class="rule"></div>
-  <div class="grid g2" style="grid-template-columns:1fr 3fr">
-    <div class="card red">
-      <label class="f" for="pm-risk">Risk category</label>
-      <select id="pm-risk"></select>
-      <p class="small muted" style="margin-top:12px">Highlighted controls may earn a reduction for this risk. Dimmed ones address a different pathway. Governance controls support every risk but earn no reduction on their own.</p>
-      <p class="small muted" id="pm-count"></p>
+<section class="slide" id="problem" data-time="1:00 – 2:00">
+  <header><p class="eyebrow">Why this matters here</p><h2>In a regulated function, the cost of a miss is not the email you read late. <span class="thin">It is the one you never saw.</span></h2></header>
+  <div class="body cols cols-21">
+    <div style="display:grid;gap:1em;align-content:start">
+      <p class="lead">A typical Monday for this team: regulator correspondence, redlines from outside counsel, business teams asking for a view, internal audit follow-ups, board deadlines, and the newsletters and vendor mail that sit on top of all of it.</p>
+      <ul class="clean">
+        <li><b>Requests for an opinion</b> arrive as "quick question" and look like noise.</li>
+        <li><b>Deadlines</b> live inside attachments and three-week-old threads.</li>
+        <li><b>Regulator and audit mail</b> competes for attention with everything else at 8:30 on Monday.</li>
+      </ul>
     </div>
-    <div id="pm-out"></div>
-  </div>
-</section>
-
-<section class="slide" id="effectiveness" data-title="Input 3 · Effectiveness">
-  <div class="eyebrow">Input 3 of 4</div>
-  <h2>Control effectiveness: design and operation</h2>
-  <div class="rule"></div>
-  <div class="tbl-wrap"><table>
-    <tr><th>Level (Risk team scale)</th><th>What it looks like in practice</th><th>Can earn a reduction?</th></tr>
-    <tr><td>1 Fully effective</td><td>Designed for this pathway and operating as intended, with no known gaps or exceptions</td><td>Yes, up to 2</td></tr>
-    <tr><td>2 Mostly effective</td><td>Operating, with minor gaps that do not leave the pathway open</td><td>Yes, 1</td></tr>
-    <tr><td>3 Partially effective</td><td>Covers part of the pathway, or operates inconsistently; the event stays credible</td><td>No</td></tr>
-    <tr><td>4 Mostly ineffective</td><td>Exists on paper or in part; rarely works as intended</td><td>No</td></tr>
-    <tr><td>5 None or ineffective</td><td>Absent, not yet in place, expired or not operating</td><td>No</td></tr>
-  </table></div>
-  <p class="muted">Two questions: is the control designed to interrupt this specific pathway, and is it operating? Rate it as it is today, not as it will be after the actions. A planned, draft or expired control is level 5. A control that works for most users but not for the vendor support role is Partially effective, because the pathway is still open for that group.</p>
-</section>
-
-<section class="slide" id="evidence" data-title="Input 4 · Evidence">
-  <div class="eyebrow">Input 4 of 4</div>
-  <h2>Evidence status: what you can show</h2>
-  <div class="rule"></div>
-  <div class="grid g3">
-    <div class="card" style="border-top-color:var(--ok)"><h3>Supported</h3><p>Independent audit or test result, logs or configuration evidence dated within the last 12 months, showing the control operating as designed.</p><p class="small muted">Example: a SOC 2 Type II report in hand, period within 12 months, scope covers the service.</p></div>
-    <div class="card" style="border-top-color:var(--warn)"><h3>Partially supported</h3><p>Design evidence only (a policy, a contract clause, settings without operating evidence), or operating evidence older than 12 months.</p><p class="small muted">Example: a signed clause requiring access reviews, but no review has run yet.</p></div>
-    <div class="card" style="border-top-color:var(--bad)"><h3>Not verified</h3><p>A questionnaire answer or attestation only; planned, draft or expired controls.</p><p class="small muted">Example: the business lead ticks “MFA” on the PIA form and nothing else is provided.</p></div>
-  </div>
-  <p style="margin-top:14px"><b>A questionnaire answer on its own is always Not verified.</b> Ask for the evidence; if it does not arrive, record the gap as an action and score what you have. Write the evidence reference, with its date, in the rationale column so the next reviewer can find it.</p>
-</section>
-
-<!-- PART 3 -->
-<section class="slide" id="reduction" data-title="Reduction table" data-part="Part 3 · Read">
-  <div class="eyebrow">Part 3 · Read</div>
-  <h2>The reduction table is the heart of the rule</h2>
-  <div class="rule"></div>
-  <div class="grid g2">
-    <div class="tbl-wrap"><table class="hover" id="red-tbl">
-      <tr><th>Effectiveness</th><th class="c">Supported</th><th class="c">Partially supported</th><th class="c">Not verified</th></tr>
-    </table></div>
-    <div class="card navy"><h3>How to read it</h3><p>The reduction is the number of likelihood levels the control removes: 0, 1 or 2.</p><p>It is the lower of what the effectiveness earns and what the evidence earns. Strong control, weak evidence: little or no reduction.</p><p class="muted">Four of the fifteen cells earn anything. That is the point: a reduction is for controls you can show are working. Hover a cell to see its row and column.</p></div>
-  </div>
-</section>
-
-<section class="slide" id="matrix" data-title="The matrix">
-  <div class="eyebrow">Part 3 · Read</div>
-  <h2>The matrix turns impact and likelihood into a band</h2>
-  <div class="rule"></div>
-  <div class="grid g2">
-    <div class="tbl-wrap"><table class="hover" id="matrix-tbl"></table></div>
-    <div class="card"><h3>Used twice</h3><p>Once with inherent impact and inherent likelihood, to get the inherent band.</p><p>Once more with the same impact and the residual likelihood (after the reduction), to get the residual band.</p><p class="muted">Because impact never changes at the residual stage, a risk only ever moves left along its row as the reduction lowers likelihood. Read along the Major row: a reduction can move a risk from High to Medium, never to Low. That is the Highly Confidential floor at work.</p></div>
-  </div>
-</section>
-
-<section class="slide" id="steps" data-title="The seven steps">
-  <div class="eyebrow">Part 3 · Read</div>
-  <h2>What the workbook calculates, in seven steps</h2>
-  <div class="rule"></div>
-  <div class="grid g2">
-    <div class="card"><ol>
-      <li><b>Inherent band</b> = matrix of inherent impact and inherent likelihood.</li>
-      <li><b>Modifier</b> moves the inherent band up one step, if the PIA has one.</li>
-      <li><b>Pathway check:</b> the named control must be on the map for the risk category, or the reduction is 0.</li>
-      <li><b>Reduction</b> = reduction table of effectiveness and evidence: 0, 1 or 2.</li>
-    </ol></div>
-    <div class="card"><ol start="5">
-      <li><b>Residual likelihood</b> = inherent likelihood minus the reduction, never below Rare. Impact stays as scored.</li>
-      <li><b>Residual band</b> = matrix of impact and residual likelihood; the modifier moves it up one step again.</li>
-      <li><b>Cap:</b> the residual band can never be higher than the inherent band.</li>
-    </ol><p style="margin:8px 0 0"><b>PIA rating</b> = the highest residual band across all risks. Never an average.</p></div>
-  </div>
-  <p class="muted" style="margin-top:14px">You never run these by hand; the grey columns do. You should still be able to follow them, because a reviewer will ask why a row came out the way it did, and the answer is always one of these seven.</p>
-</section>
-
-<section class="slide" id="calc" data-title="Try the rule">
-  <div class="eyebrow">Part 3 · Read</div>
-  <h2>Try the rule</h2>
-  <div class="rule"></div>
-  <p class="muted">Change any input and the seven steps update. Load a worked example to see a complete case, then change one thing at a time to see what moves the band.</p>
-  <div class="btnrow">
-    <button class="btn" type="button" id="ex1">Load example 1: vendor portal, 4,000 claimants</button>
-    <button class="btn" type="button" id="ex2">Load example 2: payments vendor, no contract, 60,000 payees</button>
-    <button class="btn ghost" type="button" id="exreset">Clear</button>
-  </div>
-  <div class="calc">
-    <div class="card">
-      <div class="eyebrow">Once per PIA</div>
-      <label class="f" for="c-dc">Most sensitive data class in scope</label><select id="c-dc"></select>
-      <label class="f" for="c-mod">Modifier</label><select id="c-mod"></select>
-      <div class="eyebrow" style="margin-top:18px">This risk</div>
-      <label class="f" for="c-risk">Risk category</label><select id="c-risk"></select>
-      <label class="f" for="c-imp">Inherent impact</label><select id="c-imp"></select>
-      <label class="f" for="c-lik">Inherent likelihood</label><select id="c-lik"></select>
-      <label class="f" for="c-ctl">Weakest control relied upon</label><select id="c-ctl"></select>
-      <label class="f" for="c-eff">Control effectiveness</label><select id="c-eff"></select>
-      <label class="f" for="c-ev">Evidence status</label><select id="c-ev"></select>
-      <details style="margin-top:14px"><summary>Expected after agreed actions</summary><div class="body">
-        <label class="f" for="c-eff2">Expected effectiveness</label><select id="c-eff2"></select>
-        <label class="f" for="c-ev2">Expected evidence</label><select id="c-ev2"></select>
-      </div></details>
-    </div>
-    <div class="card red">
-      <ol class="steps" id="c-steps"></ol>
-      <div class="result" id="c-result"></div>
-      <div id="c-flags"></div>
-      <div class="tbl-wrap"><table class="mini" id="c-mini"></table></div>
-      <p class="small muted" style="margin:8px 0 0">I marks the inherent cell, R the residual cell. The mini matrix shows the band before the modifier is applied.</p>
+    <div style="display:grid;gap:.8em;align-content:start">
+      <div class="panel"><h3>What a miss looks like</h3><ul class="clean small"><li>A regulator response deadline passed because the request sat in a cc'd thread</li><li>A sanctions question answered by Treasury without Legal, because it was titled "quick question"</li><li>Board papers submitted late because the deadline was in a PDF nobody opened</li></ul></div>
+      <div class="panel"><h3>What Copilot changes</h3><p class="small">It does not reduce the volume. It changes where you look first and how fast you understand what you are looking at.</p></div>
     </div>
   </div>
+  <footer><span>Examples are illustrative and fictional</span><span class="num">3 / 14</span></footer>
 </section>
 
-<section class="slide" id="example1" data-title="Worked example 1">
-  <div class="eyebrow">Worked example 1 · reduction earned, no modifier</div>
-  <h2>A vendor portal holding injury-claim files for 4,000 claimants</h2>
-  <div class="rule"></div>
-  <div class="grid g2" style="grid-template-columns:1fr 2fr">
-    <div class="card">
-      <h3>Inputs</h3>
-      <ul><li>Data class: Highly Confidential (minimum Major)</li><li>Modifier: None (4,000 people)</li><li>Risk 5, unauthorized access or disclosure</li><li>Impact 4 Major; likelihood 4 Likely</li><li>Control: least-privilege access</li><li>2 Mostly effective; Supported (SOC 2 Type II, March 2026)</li></ul>
+<section class="slide" id="prioritize" data-time="2:00 – 5:00">
+  <header><p class="eyebrow">Job 1 · What do I look at first?</p><h2>Prioritize marks each new email High, Normal or Low as it arrives, <span class="thin">and tells you why</span></h2></header>
+  <div class="body" style="display:grid;grid-template-columns:minmax(0,1.9fr) minmax(0,1fr);gap:1.2em;min-height:0">
+    <div style="display:grid;gap:.6em;min-height:0;grid-template-rows:auto 1fr auto">
+      <div class="legend">
+        <button class="btn" id="pri-toggle">Prioritize by Copilot: <b>Off</b></button>
+        <button class="btn" id="pri-filter" disabled>Filter: All mail</button>
+        <span><span class="pri hi" style="font-size:.9em">↑</span> High priority</span>
+        <span><span class="pri lo" style="font-size:.9em">↓</span> Low (optional)</span>
+      </div>
+      <div class="ol" id="inbox" style="min-height:0">
+        <div class="ol-top"><span class="brand">Outlook</span><span class="search">Search</span><span class="ol-cp"><span class="sp">✦</span> Copilot <span class="caret">▾</span></span></div>
+        <div class="ol-main">
+          <div class="ol-nav"><div>Favourites</div><div class="on">Inbox</div><div>Sent</div><div>Drafts</div><div>Archive</div><div>Deleted</div></div>
+          <div class="ol-list"><div class="tabs"><b>Focused</b><span>Other</span><span class="filter" id="inbox-filter-label">Filter ▾</span></div><div class="msgs" id="inbox-msgs"></div></div>
+          <div class="ol-read" id="inbox-read"></div>
+        </div>
+      </div>
+      <p class="illus"><span class="tag">Recreated screen</span> Layout follows the new Outlook; mailbox content is fictional. Press the toggle, then Filter, then open the regulator email.</p>
     </div>
-    <div>
-      <table><tr><th>Step</th><th>Calculation</th><th>Result</th></tr>
-        <tr><td>1</td><td>Matrix: Major x Likely</td><td class="band-High">High</td></tr>
-        <tr><td>2</td><td>No modifier</td><td>High (inherent)</td></tr>
-        <tr><td>3</td><td>Least-privilege access is on the map for risk 5</td><td>Yes</td></tr>
-        <tr><td>4</td><td>Reduction table: Mostly effective, Supported</td><td>1</td></tr>
-        <tr><td>5</td><td>Likelihood 4 minus 1; impact stays Major</td><td>3 Possible</td></tr>
-        <tr><td>6</td><td>Matrix: Major x Possible; no modifier</td><td class="band-Medium">Medium</td></tr>
-        <tr><td>7</td><td>Medium is not above High</td><td>Medium, ERM 3</td></tr>
-      </table>
-      <p class="small muted">Agreed action: quarterly access reviews, which would make the control Fully effective. Expected after actions: reduction 2, Unlikely, Major x Unlikely is still Medium. The impact keeps this risk at Medium however good the control becomes.</p>
-    </div>
-  </div>
-</section>
-
-<section class="slide" id="example2" data-title="Worked example 2">
-  <div class="eyebrow">Worked example 2 · no reduction, modifier applies</div>
-  <h2>A payments vendor with no contract yet, 60,000 payees</h2>
-  <div class="rule"></div>
-  <div class="grid g2" style="grid-template-columns:1fr 2fr">
-    <div class="card">
-      <h3>Inputs</h3>
-      <ul><li>Data class: Highly Confidential (bank details)</li><li>Modifier: Scale (more than 10,000 people)</li><li>Risk 12, vendor and sub-processor: processing outside instructions</li><li>Impact 3 Moderate (loss of control, not exposure); likelihood 3 Possible</li><li>Control: contractual processing restrictions</li><li>5 None (no agreement signed); Not verified</li></ul>
-    </div>
-    <div>
-      <table><tr><th>Step</th><th>Calculation</th><th>Result</th></tr>
-        <tr><td>1</td><td>Matrix: Moderate x Possible</td><td class="band-Medium">Medium</td></tr>
-        <tr><td>2</td><td>Scale modifier: up one step</td><td class="band-High">High (inherent)</td></tr>
-        <tr><td>3</td><td>Contract restrictions are on the map for risk 12</td><td>Yes</td></tr>
-        <tr><td>4</td><td>Reduction table: None, Not verified</td><td>0</td></tr>
-        <tr><td>5</td><td>Likelihood 3 minus 0; impact stays Moderate</td><td>3 Possible</td></tr>
-        <tr><td>6</td><td>Matrix: Moderate x Possible, then modifier</td><td class="band-High">High</td></tr>
-        <tr><td>7</td><td>High is not above High</td><td>High, ERM 4</td></tr>
-      </table>
-      <p class="small muted">Impact sits below the Major minimum, so the row is flagged and the rationale says why: the harm is loss of control, and exposure of the bank data is scored in another row. Expected after the agreement is signed (Fully effective, Supported): reduction 2, Rare, Moderate x Rare is Low, modifier makes it Medium.</p>
+    <div style="display:grid;gap:.8em;align-content:start">
+      <div class="step"><div class="n">1</div><div><b>Turn it on once.</b> Arrow next to the Copilot button, then <b>Prioritize</b>. Copilot asks for at least one rule, such as <i>It's from a regulator</i>.</div></div>
+      <div class="step"><div class="n">2</div><div><b>Read the reason, not just the arrow.</b> The preview line becomes a one-line summary; the reading pane explains the ranking.</div></div>
+      <div class="step"><div class="n">3</div><div><b>Filter to High.</b> Filter or sort at the top of the message list. Nothing moves; the inbox is only re-marked.</div></div>
+      <div class="takeaway"><strong>Say this out loud</strong>It is a first pass, not a filter. Nothing disappears. It tells you where to look first.</div>
     </div>
   </div>
+  <footer><span class="src">Microsoft Support, <a href="https://support.microsoft.com/en-us/outlook/copilot-outlook/prioritize-my-inbox">Prioritize my inbox</a> (updated Jan 2026)</span><span class="num">4 / 14</span></footer>
 </section>
-
-<!-- PART 4 -->
-<section class="slide" id="result" data-title="Reading the result" data-part="Part 4 · Decide">
-  <div class="eyebrow">Part 4 · Decide</div>
-  <h2>Reading the result: the PIA takes its highest risk</h2>
-  <div class="rule"></div>
-  <div class="tbl-wrap"><table>
-    <tr><th>Residual</th><th>What it means</th><th>Who signs</th><th>Review</th></tr>
-    <tr><td class="band-Low">Low</td><td>Acceptable; proceed once gates are met</td><td>Privacy Analyst</td><td>On change, or every 36 months</td></tr>
-    <tr><td class="band-Medium">Medium</td><td>Acceptable with Privacy Office recommendations</td><td>Privacy Analyst</td><td>On change, or 24 months</td></tr>
-    <tr><td class="band-High">High</td><td>Acceptable with formal acceptance of actions by the Contract/System Owner, with Privacy concurrence</td><td>Manager, Privacy</td><td>On change, or 12 months</td></tr>
-  </table></div>
-  <div class="grid g3">
-    <div class="card"><h3>Highest, never average</h3><p class="muted">One High risk makes the PIA High. Seven Lows do not dilute it.</p></div>
-    <div class="card"><h3>Record both ratings</h3><p class="muted">The current rating decides. The expected rating after actions is reported beside it, never instead of it.</p></div>
-    <div class="card"><h3>High goes on the register</h3><p class="muted">Every High rating and every accepted High risk is recorded in the privacy risk register and the quarterly ERM report.</p></div>
+<section class="slide" id="prioritize-screens" data-time="(within 2:00 – 5:00)">
+  <header><p class="eyebrow">Job 1 · Where it lives in Outlook</p><h2>Prioritize lives in three places: <span class="thin">the menu, the email, the filter</span></h2></header>
+  <div class="body" style="display:grid;align-content:center">
+    <div class="flow">
+      <div class="stepcol">
+        <h3>Turn it on</h3>
+        <p>The arrow beside the Copilot button, top right. Prioritize is the last item.</p>
+        <div class="mini">
+          <div style="display:flex;justify-content:flex-end"><span class="ol-cp"><span class="sp">✦</span> Copilot <span class="caret">▾</span></span></div>
+          <div class="menu"><div>Summarize</div><div>Summarize and Reply</div><div>List email takeaways</div><div class="on"><span class="circ">↑</span>Prioritize</div></div>
+        </div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="stepcol">
+        <h3>Read the reason</h3>
+        <p>Open a marked email. Copilot says why it ranked it, above the message.</p>
+        <div class="mini">
+          <div style="font-weight:600;font-size:1.05em"><span class="pri hi">↑</span> Information request REF 26/0417</div>
+          <div style="color:var(--ol-muted)">Supervision Team · Mon 08:12</div>
+          <div class="cpbox"><div class="h"><span class="sp">✦</span> Why this is high priority</div>From an external regulator, asks Legal for documents, response due 13 November.</div>
+        </div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="stepcol">
+        <h3>Filter to High</h3>
+        <p>Filter the message list. Nothing moves; the inbox is only marked.</p>
+        <div class="mini">
+          <div style="display:flex;justify-content:space-between;color:var(--ol-muted)"><span>Inbox</span><span style="color:var(--ol-blue);font-weight:600">Filter ▾</span></div>
+          <div class="menu"><div>All</div><div>Unread</div><div>Flagged</div><div class="on"><span class="pri hi" style="font-size:.85em">↑</span>High priority</div></div>
+        </div>
+      </div>
+    </div>
   </div>
+  <footer><span class="src">Screens recreated from this firm's Outlook build and Microsoft's documentation: <a href="https://support.microsoft.com/en-us/outlook/media/outlook-copilot-menu.jpg">menu</a> · <a href="https://support.microsoft.com/en-us/outlook/media/outlook-copilot-prioritize-my-email.png">reading pane</a> · <a href="https://support.microsoft.com/en-us/outlook/media/outlook-filter-by-high-priority.png">filter</a></span><span class="num">5 / 14</span></footer>
 </section>
 
-<section class="slide" id="mistakes" data-title="Six mistakes">
-  <div class="eyebrow">Part 4 · Decide</div>
-  <h2>Six mistakes that break reproducibility</h2>
-  <div class="rule"></div>
-  <details><summary>Giving a reduction for a planned, draft, expired or self-attested control</summary><div class="body">Score it as it is today (level 5 or Not verified); put the fix in the actions and let the expected rating show the gain.</div></details>
-  <details><summary>Scoring likelihood with the controls already in mind</summary><div class="body">Score the raw exposure first; the controls earn their reduction in inputs 3 and 4. Otherwise they are counted twice.</div></details>
-  <details><summary>Scoring the same gap in several rows</summary><div class="body">Name one row that carries it; the other rationales point to that row.</div></details>
-  <details><summary>Averaging the risks to get the PIA rating</summary><div class="body">The PIA rating is the highest residual band, always.</div></details>
-  <details><summary>Lowering the impact because a control limits the harm</summary><div class="body">Impact stays as scored; a reduction of impact is a Chief Privacy Officer exception, written in the rationale and the register.</div></details>
-  <details><summary>Typing over a calculated cell to get the band you expected</summary><div class="body">Change an input you can defend, or raise the rationale with the Privacy Office. Grey cells are never edited: a typed-over band breaks the audit trail for every row after it.</div></details>
-</section>
-
-<section class="slide" id="checklist" data-title="Before you submit">
-  <div class="eyebrow">Part 4 · Decide</div>
-  <h2>Before you submit</h2>
-  <div class="rule"></div>
-  <p class="muted">Tick each item once it is true of your assessment. Progress is kept on this device only.</p>
-  <div class="check" id="checks"></div>
-</section>
-
-<section class="slide" id="quiz" data-title="Knowledge check">
-  <div class="eyebrow">Part 4 · Decide</div>
-  <h2>Knowledge check</h2>
-  <div class="rule"></div>
-  <p class="muted">Seven questions. Pick an answer to see whether it is right and why.</p>
-  <div id="quiz-out"></div>
-  <div class="btnrow"><button class="btn ghost" type="button" id="quiz-reset">Start again</button></div>
-</section>
-
-<section class="slide" id="find" data-title="Where to find things">
-  <div class="eyebrow">Part 4 · Decide</div>
-  <h2>Where to find things</h2>
-  <div class="rule"></div>
-  <div class="grid g3">
-    <div class="card"><h3>The workbook</h3><ul><li>Read me: the rule in brief</li><li>Assessment: the blank template</li><li>Claims EFT (4-input): a completed example</li><li>Pathway map: which controls count for which risk</li><li>Lookups: the matrix, reduction table and decision table</li></ul></div>
-    <div class="card"><h3>The documents</h3><ul><li>Privacy Residual Risk Decision Rule (one page): the rule itself</li><li>Privacy Risk Assessment Methodology: scales, matrix, modifiers, approvals</li><li>Privacy risk catalogue and control catalogue</li></ul></div>
-    <div class="card navy"><h3>When to ask</h3><ul><li>A control you rely on is not on the map for its risk</li><li>You think impact should be reduced by a control</li><li>The two questionnaires conflict and neither reading is clearly more credible</li><li>A calculated band looks wrong to you</li></ul><p class="small muted">Ask the Privacy Office. Never change the map, the reduction table or a grey cell yourself.</p></div>
+<section class="slide" id="rules" data-time="(within 2:00 – 5:00)">
+  <header><p class="eyebrow">Job 1 · Teach it what matters</p><h2>Teach Copilot what "important" means in Legal &amp; Compliance <span class="thin">before you rely on its ranking</span></h2></header>
+  <div class="body cols cols-12">
+    <div style="display:grid;gap:.6em;align-content:start">
+      <div class="settings"><div class="side"><div>Accounts</div><div>General</div><div>Mail</div><div>Calendar</div><div class="on">Copilot</div><div>Groups</div></div>
+        <div class="pane"><h5>Prioritize</h5>
+          <div class="toggle"><span class="sw"></span><span>Prioritize my inbox with Copilot</span></div>
+          <div class="toggle"><span class="sw off"></span><span>Mark low priority emails with a down arrow</span></div>
+          <div style="font-weight:600;margin-top:.3em">Treat as high priority</div>
+          <div class="rule-in"><span>It's from a regulator or supervisory authority</span><span class="x">✕</span></div>
+          <div class="rule-in"><span>It asks for a legal opinion, advice or sign-off</span><span class="x">✕</span></div>
+          <div class="rule-in"><span>It mentions a deadline, due date or response date</span><span class="x">✕</span></div>
+          <div class="rule-in" style="color:var(--ol-muted)">Add a rule…</div>
+        </div></div>
+      <p class="illus src"><span class="tag">Recreated</span> Settings › Copilot › Prioritize. <a href="https://support.microsoft.com/en-us/outlook/media/outlook-copilot-teach-it-to-prioritize.png">Microsoft's screenshot ↗</a></p>
+    </div>
+    <div style="display:grid;gap:.9em;align-content:start">
+      <div class="step"><div class="n">1</div><div><b>Open Settings › Copilot › Prioritize.</b> Copilot starts with its own rules; yours sit on top of them.</div></div>
+      <div class="step"><div class="n">2</div><div><b>Write rules as phrases, not keywords.</b> "It's from…", "mentions…", "contains…" work; a single word like "deadline" works less well.</div></div>
+      <div class="step"><div class="n">3</div><div><b>Expect it to apply to new mail only.</b> Copilot does not go back and re-rank what is already in the inbox, even after you change a rule.</div></div>
+      <div class="panel"><h3>Optional</h3><p class="small">Turn on the down arrow for low priority mail in the same settings pane. It is off by default and is the quickest way to see newsletters and vendor mail sink.</p></div>
+      <p class="muted small">The eight starting rules for this team are on the next slide, ready to copy.</p>
+    </div>
   </div>
-  <p class="footer">Privacy Residual Risk Decision Rule v1.1 · Echelon Insurance Privacy Office · Training guide, 2 November 2026. The rule, the pathway map and the lookup tables are versioned together; raise a concern rather than working around it in a single assessment.</p>
+  <footer><span class="src">Microsoft Support, <a href="https://support.microsoft.com/en-us/outlook/copilot-outlook/prioritize-my-inbox">Prioritize my inbox</a>, "Teaching Copilot how you'd like mail to be prioritized"</span><span class="num">6 / 14</span></footer>
 </section>
 
+<section class="slide" id="rules-list" data-time="(within 2:00 – 5:00)">
+  <header><p class="eyebrow">Job 1 · The prioritization list</p><h2>Eight starting rules for this team, <span class="thin">ready to paste into Settings</span></h2></header>
+  <div class="body cols cols-2" style="font-size:.98em;align-content:start">
+    <div style="display:grid;gap:.5em;align-content:start">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:.6em"><b>Treat as high priority</b><button class="btn" id="rules-copy-all">Copy all eight</button></div>
+      <div class="rules" id="rules-list-hi">
+        <div class="rule"><code>It's from a regulator or supervisory authority</code><button class="copy">Copy</button></div>
+        <div class="rule"><code>It's from external counsel or a law firm</code><button class="copy">Copy</button></div>
+        <div class="rule"><code>It asks for a legal opinion, advice or sign-off</code><button class="copy">Copy</button></div>
+        <div class="rule"><code>It mentions a deadline, due date or response date</code><button class="copy">Copy</button></div>
+        <div class="rule"><code>It's about an information request, investigation, subpoena or enforcement</code><button class="copy">Copy</button></div>
+        <div class="rule"><code>It mentions sanctions, bribery, whistleblowing or a data breach</code><button class="copy">Copy</button></div>
+      </div>
+    </div>
+    <div style="display:grid;gap:.5em;align-content:start">
+      <div style="display:flex;align-items:center;min-height:2.1em"><b>Mark as low priority</b></div>
+      <div class="rules" id="rules-list-lo">
+        <div class="rule"><code>It's a newsletter or legal news digest</code><button class="copy">Copy</button></div>
+        <div class="rule"><code>It's a vendor webinar, event or marketing email</code><button class="copy">Copy</button></div>
+      </div>
+      <div class="panel" style="margin-top:.6em"><h3>Tune after one week</h3><ul class="clean small"><li>Filter to High and read the reasons: which rule fired, and was it right?</li><li>Add a rule for any sender or matter you had to hunt for</li><li>Delete a rule that keeps firing on noise; "mentions a deadline" is the usual suspect</li></ul></div>
+      <div class="panel"><h3>Wording note</h3><p class="small">Name your real regulators, law firms and systems in the rules ("It's an automatic notification from [matter system]"). Specific phrases rank better than general ones.</p></div>
+    </div>
+  </div>
+  <footer><span class="src">Rule style follows Microsoft's guidance in <a href="https://support.microsoft.com/en-us/outlook/copilot-outlook/prioritize-my-inbox">Prioritize my inbox</a>; wording adapted for this team</span><span class="num">7 / 14</span></footer>
+</section>
+
+<section class="slide" id="limits" data-time="(within 2:00 – 5:00)">
+  <header><p class="eyebrow">Job 1 · Limits</p><h2>Copilot ranks by signals, not by legal risk. <span class="thin">Plant one it gets wrong and let the room find it.</span></h2></header>
+  <div class="body cols cols-2">
+    <div style="display:grid;gap:.8em;align-content:start">
+      <div class="ol" style="font-size:.74em"><div class="ol-read">
+        <h4>Quick question</h4>
+        <div class="meta">Dana Okafor, Treasury · Mon 08:41 · to you</div>
+        <div class="cpbox" style="opacity:.75"><div class="h"><span class="sp">✦</span> Normal priority</div>Internal message, no deadline stated, short request from a colleague.</div>
+        <div class="body">Hi, can we settle the Astoria Holdings invoice through their new entity in Dubai instead? Finance wants to release by 3pm. Thanks!</div>
+      </div></div>
+      <div class="callout hi"><b>What the lawyer sees:</b> a change of counterparty to a new entity in a different jurisdiction, same day, no screening mentioned. This is a sanctions and KYC question, and Copilot ranked it level with the HR policy refresh.</div>
+    </div>
+    <div style="display:grid;gap:.8em;align-content:start">
+      <div class="panel"><h3>What Prioritize does not do</h3><ul class="clean small">
+        <li>Rank mail that arrived before you switched it on; changing rules later does not re-rank old mail</li>
+        <li>Look outside the main Inbox: rules that move mail to subfolders bypass it; shared mailboxes are not evaluated</li>
+        <li>Evaluate meeting mail, out-of-office replies, mail the sender marked low importance, mail to yourself, encrypted mail it cannot read</li>
+        <li>Replace Focused/Other; it adds a marker on top</li>
+      </ul></div>
+      <div class="panel"><h3>Availability</h3><p class="small">Needs a Microsoft 365 Copilot licence, is rolling out gradually, and supports major languages first. Check it works in your tenant the week before.</p></div>
+      </div>
+  </div>
+  <footer><span class="src">Exclusions per Microsoft Support, <a href="https://support.microsoft.com/en-us/outlook/copilot-outlook/prioritize-my-inbox">Prioritize my inbox</a></span><span class="num">8 / 14</span></footer>
+</section>
+
+<section class="slide" id="summarize" data-time="5:00 – 9:00">
+  <header><p class="eyebrow">Job 2 · Read it for me</p><h2>Summarize the thread, then the attachment, <span class="thin">then check one fact against the source</span></h2></header>
+  <div class="body" style="display:grid;grid-template-columns:minmax(0,1.9fr) minmax(0,1fr);gap:1.2em;min-height:0">
+    <div style="display:grid;gap:.6em;min-height:0;grid-template-rows:auto 1fr auto">
+      <div class="legend">
+        <button class="btn primary" id="sum-thread">✦ Summary by Copilot</button>
+        <button class="btn" id="sum-file" disabled>✦ Summarize a file</button>
+        <button class="btn" id="sum-check" disabled>Spot-check the date</button>
+      </div>
+      <div class="ol" style="min-height:0"><div class="ol-read" id="sum-pane">
+        <h4><span class="pri hi">↑</span> RE: Information request REF 26/0417 · response due 13 November</h4>
+        <div class="meta">Supervision Team, Hartwell &amp; Co, Priya Nair, you · 14 messages · last reply Mon 08:12</div>
+        <div id="sum-out"></div>
+        <div><span class="att">📄 Information_Request_26-0417.pdf · 6 pages</span></div>
+        <div id="file-out"></div>
+        <div class="body" id="sum-src">Dear Counsel,<br>Further to our supervisory review of 22 October, we request the documents listed in the attached schedule. Please provide items 1 to 7 by <span id="src-date">13 November 2026</span>, or confirm in writing by 9 November if any item cannot be produced…</div>
+      </div></div>
+      <p class="illus"><span class="tag">Recreated screen</span> Thread and letter are fictional. Press the three buttons in order.</p>
+    </div>
+    <div style="display:grid;gap:.8em;align-content:start">
+      <div class="step"><div class="n">1</div><div><b>Summarize</b> is in the Copilot menu (arrow, top right) and as <b>Summary by Copilot</b> at the top of a thread. The numbered citations jump to the supporting message. <b>List email takeaways</b>, in the same menu, gives the asks and actions as bullets; use it when the question is "what does this want from Legal?"</div></div>
+      <div class="step"><div class="n">2</div><div><b>Summarize a file</b> works on PDF, Word and PowerPoint attachments in the new Outlook. Ask for obligations, dates and open questions.</div></div>
+      <div class="step"><div class="n">3</div><div><b>Spot-check</b> one fact against the document, every time, in front of the room. The habit matters more than the feature.</div></div>
+      <div class="prompt"><span>What does this attachment ask of Legal, and what are the deadlines? List every obligation, date and open question.</span><button class="copy">Copy</button></div>
+      </div>
+  </div>
+  <footer><span class="src">Microsoft Support, <a href="https://support.microsoft.com/en-us/outlook/copilot-pages/summarize-an-email-thread-with-copilot-in-outlook">Summarize an email thread with Copilot in Outlook</a> (updated Apr 2026)</span><span class="num">9 / 14</span></footer>
+</section>
+<section class="slide" id="find" data-time="9:00 – 13:00">
+  <header><p class="eyebrow">Job 3 · What is buried?</p><h2>Ask Copilot Chat two questions every Monday: <span class="thin">who is waiting on me, and what is due</span></h2></header>
+  <div class="body" style="display:grid;grid-template-columns:minmax(0,1.9fr) minmax(0,1fr);gap:1.2em;min-height:0">
+    <div style="display:grid;gap:.6em;min-height:0;grid-template-rows:auto 1fr auto">
+      <div class="legend">
+        <button class="btn primary" id="chat-q1">Run prompt 1 · Outstanding requests</button>
+        <button class="btn" id="chat-q2">Run prompt 2 · Deadlines this month</button>
+        <button class="btn" id="chat-reset">Clear</button>
+      </div>
+      <div class="chat" style="min-height:0"><div class="head"><span style="color:var(--ol-blue)">✦</span> Copilot</div>
+        <div class="log" id="chat-log"><div class="a">Ask me about your inbox and calendar. I only see mail in your own mailbox.</div></div>
+        <div class="in"><span class="box" id="chat-box">Ask a question or make a request…</span><span style="color:var(--ol-blue);font-weight:700">➤</span></div>
+      </div>
+      <p class="illus"><span class="tag">Recreated screen</span> Copilot Chat opens beside Outlook from the Copilot button. Results shown are fictional.</p>
+    </div>
+    <div style="display:grid;gap:.7em;align-content:start">
+      <div class="prompt"><span>List emails from the last two weeks where someone asked me for an opinion or advice and I haven't replied.</span><button class="copy">Copy</button></div>
+      <div class="prompt"><span>Which deadlines or deliverables are mentioned in my emails this month? Show sender, item, date.</span><button class="copy">Copy</button></div>
+      <div class="panel"><h3>Then act on it</h3><p class="small">Copilot can flag, pin or archive the emails it found when you ask in plain English ("flag all of these"). Paste the table into your matter tracker or To Do.</p></div>
+      <div class="callout"><b>Caveat to say out loud:</b> it is a net, not a ledger. It only sees your mailbox, and it will miss a deadline written as "by the end of next week".</div>
+    </div>
+  </div>
+  <footer><span class="src">Microsoft Support, <a href="https://support.microsoft.com/en-us/outlook/copilot-outlook/chat-with-copilot-in-outlook">Chat with Copilot in Outlook</a> and <a href="https://support.microsoft.com/en-US/Outlook/triage-email-with-microsoft-365-copilot-in-outlook">Triage email with Copilot</a> (triage commands: English only)</span><span class="num">10 / 14</span></footer>
+</section>
+
+<section class="slide" id="rules-of-use" data-time="13:00 – 14:00">
+  <header><p class="eyebrow">Rules for this group</p><h2>Three things to know before you trust it with privileged material</h2></header>
+  <div class="body" style="display:grid;grid-template-rows:1fr auto;gap:1em">
+    <div class="three">
+      <div class="card"><div class="n">1</div><h3>It stays inside the boundary</h3><p>Copilot in Outlook works on mail you already have access to, inside the firm's Microsoft 365 tenant. It does not give you access to anything new, and it does not train on your mail.</p></div>
+      <div class="card"><div class="n">2</div><h3>A summary is not the document</h3><p>Summaries and drafts are your work product once you use them. Read the source before you rely on a date, an obligation or a quotation. Review every draft before it leaves.</p></div>
+      <div class="card"><div class="n">3</div><h3>Prompts and answers are records</h3><p>Copilot interactions are stored in your mailbox and fall under the same retention and eDiscovery policies as email. Write prompts the way you write email.</p></div>
+    </div>
+    <div class="takeaway"><strong>What it does not replace</strong>Legal judgment, approvals, privilege decisions and record-keeping obligations. Copilot shortens the reading; it does not shorten the thinking.</div>
+  </div>
+  <footer><span>Confirm points 1 and 3 with IT and Information Governance for your tenant's configuration before presenting</span><span class="num">11 / 14</span></footer>
+</section>
+
+<section class="slide" id="discoverable" data-time="(within 13:00 – 14:00)">
+  <header><p class="eyebrow">Rules for this group · Discoverability</p><h2>Your Copilot chat is a document, <span class="thin">and documents get produced</span></h2></header>
+  <div class="body cols cols-12">
+    <div style="display:grid;gap:.6em;align-content:start">
+      <div class="panel"><h3>How the record is created</h3>
+        <div style="display:grid;gap:.45em;font-size:.9em">
+          <div class="step"><div class="n">1</div><div>You type a prompt in Copilot Chat; Copilot answers.</div></div>
+          <div class="step"><div class="n">2</div><div>Both are copied into a hidden folder in your own Exchange mailbox. You cannot see the folder; the organization can.</div></div>
+          <div class="step"><div class="n">3</div><div>Retention policies, litigation holds and eDiscovery holds apply to that folder exactly as they do to email.</div></div>
+          <div class="step"><div class="n">4</div><div>Purview eDiscovery can search, collect and export it. "Delete" in the app moves the chat to a holds folder; it does not remove the retained copy.</div></div>
+        </div></div>
+      <div class="callout"><b>What is captured varies by tenant.</b> Microsoft documents this for Copilot Chat; confirm with IT and Information Governance which in-app actions (summaries, drafts) your tenant retains, and for how long.</div>
+    </div>
+    <div style="display:grid;gap:.6em;align-content:start">
+      <div class="panel"><h3>Why it reaches a courtroom or a regulator</h3><ul class="clean small">
+        <li><b>Discovery rules reach electronic data.</b> In Canadian civil procedure a "document" includes data and information in electronic form, and every relevant document in a party's possession, control or power must be disclosed unless privileged (for example Ontario Rule 30). Other common-law jurisdictions have equivalents.</li>
+        <li><b>Regulators have their own powers.</b> An information request like the one in today's demo can reach stored Copilot interactions as readily as it reaches email.</li>
+        <li><b>A hold freezes it.</b> Once litigation or an investigation is reasonably anticipated, the retained copy is preserved whatever you do in the app.</li>
+        <li><b>Privilege is claimed, not automatic.</b> A prompt that reflects legal advice may be privileged, but each item is reviewed on its own. Prompts that mix advice with business chatter, or that read as venting, weaken the claim.</li>
+      </ul></div>
+      <div class="takeaway"><strong>Working rule</strong>Write every prompt as if opposing counsel will read it aloud. Keep privileged work in privileged channels, label it, and never paste advice into a prompt that also carries business talk.</div>
+    </div>
+  </div>
+  <footer><span class="src">Microsoft Learn, <a href="https://learn.microsoft.com/purview/retention-policies-copilot">Learn about retention for Copilot</a>; discovery points are general and should be confirmed with litigation counsel for your jurisdiction</span><span class="num">12 / 14</span></footer>
+</section>
+
+<section class="slide" id="start" data-time="14:00 – 15:00 + Q&amp;A">
+  <header><p class="eyebrow">Start this week</p><h2>One habit, five prompts, <span class="thin">and a person to ask</span></h2></header>
+  <div class="body cols cols-12">
+    <div style="display:grid;gap:.8em;align-content:start">
+      <div class="panel"><h3>The habit</h3><p>Before you read anything on Monday, filter to High priority and run prompt 1. Ten minutes, then read as normal.</p></div>
+      <div class="panel"><h3>Who to ask</h3><p class="small">Name the two or three daily Copilot users in the room as go-to helpers. Pair each with a newcomer for the first two weeks.</p></div>
+      <div class="panel"><h3>Set-up checklist (5 minutes)</h3><ul class="clean small"><li>Copilot button → Prioritize → add the first rule</li><li>Settings › Copilot › Prioritize → paste the rule list</li><li>Wait for new mail; old mail will not be ranked</li></ul></div>
+    </div>
+    <div style="display:grid;gap:.5em;align-content:start">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:.6em"><b>Prompt card</b><button class="btn" id="prompts-copy-all">Copy all prompts</button></div>
+      <div id="prompt-card" style="display:grid;gap:.45em">
+        <div class="prompt"><span>What in my inbox needs action from me today?</span><button class="copy">Copy</button></div>
+        <div class="prompt"><span>Summarize this thread: what is being asked of Legal, by whom, and by when?</span><button class="copy">Copy</button></div>
+        <div class="prompt"><span>What does this attachment ask of Legal, and what are the deadlines? List every obligation, date and open question.</span><button class="copy">Copy</button></div>
+        <div class="prompt"><span>List emails from the last two weeks where someone asked me for an opinion or advice and I haven't replied.</span><button class="copy">Copy</button></div>
+        <div class="prompt"><span>Which deadlines or deliverables are mentioned in my emails this month? Show sender, item, date.</span><button class="copy">Copy</button></div>
+      </div>
+    </div>
+  </div>
+  <footer><span>Print the prompt card one per person; leave each prompt on screen long enough to photograph</span><span class="num">13 / 14</span></footer>
+</section>
+
+<section class="slide" id="appendix" data-time="Before the session">
+  <header><p class="eyebrow">Appendix · Presenter readiness</p><h2>Check these in your own tenant the week before <span class="thin">(ticks save on this device only)</span></h2></header>
+  <div class="body cols cols-2">
+    <div class="checklist" id="readiness">
+      <label><input type="checkbox" id="rd1"><span><b>Prioritize</b> appears under the Copilot menu for the demo account, and new test mail is being ranked</span></label>
+      <label><input type="checkbox" id="rd2"><span><b>Summary by Copilot</b> and <b>Summarize a file</b> both work on a thread with a PDF attached</span></label>
+      <label><input type="checkbox" id="rd3"><span><b>Copilot Chat</b> answers the two "what is buried" prompts with a table in the demo mailbox</span></label>
+      <label><input type="checkbox" id="rd4"><span>Demo mailbox seeded with 12 to 20 sanitized emails, including the planted "quick question"</span></label>
+      <label><input type="checkbox" id="rd5"><span>Prioritize switched on <i>before</i> the seed mail was sent (older mail is never ranked)</span></label>
+      <label><input type="checkbox" id="rd6"><span>IT and Information Governance have confirmed the tenant boundary and retention statements on slide 10</span></label>
+      <label><input type="checkbox" id="rd7"><span>Prompt card printed; helpers in the room named</span></label>
+      <label><input type="checkbox" id="rd8"><span>A "what went wrong" line ready: a failed demo recovered calmly teaches more than a flawless one</span></label>
+    </div>
+    <div style="display:grid;gap:.8em;align-content:start">
+      <div class="panel src"><h3>Sources</h3><ul class="clean small">
+        <li><a href="https://support.microsoft.com/en-us/outlook/copilot-outlook/prioritize-my-inbox">Prioritize my inbox</a>, Microsoft Support, updated January 2026</li>
+        <li><a href="https://support.microsoft.com/en-us/outlook/copilot-pages/summarize-an-email-thread-with-copilot-in-outlook">Summarize an email thread with Copilot in Outlook</a>, Microsoft Support, updated April 2026</li>
+        <li><a href="https://support.microsoft.com/en-us/outlook/copilot-outlook/chat-with-copilot-in-outlook">Chat with Copilot in Outlook</a>, Microsoft Support, updated January 2026</li>
+        <li><a href="https://support.microsoft.com/en-US/Outlook/triage-email-with-microsoft-365-copilot-in-outlook">Triage email with Microsoft 365 Copilot in Outlook</a>, Microsoft Support</li>
+        <li><a href="https://support.microsoft.com/outlook/frequently-asked-questions-about-copilot-in-outlook">Frequently asked questions about Copilot in Outlook</a>, Microsoft Support, February 2026</li>
+      </ul></div>
+      <div class="panel"><h3>Known changes</h3><p class="small">The separate mobile "Priority view" was withdrawn in February 2026; the High-priority markers and reasoning still appear on phones. Feature names and menus move; re-check the week before.</p></div>
+    </div>
+  </div>
+  <footer><span>Deck navigation: arrow keys or space · N notes · F fullscreen · ? help</span><span class="num">14 / 14</span></footer>
+</section>
+
+</main>
+<aside class="notes" id="notes" hidden><h4>Speaker notes</h4><div id="notes-body"></div></aside>
 </div>
 
-<footer class="bottom">
-  <button class="btn ghost" id="prevB" type="button">‹ Previous</button>
-  <div class="bar"><i id="barfill"></i></div>
-  <span class="hint">Use the arrow keys to move between slides</span>
-  <button class="btn" id="nextB" type="button">Next ›</button>
+<footer class="bar">
+  <button id="prev" aria-label="Previous slide">‹ Prev</button>
+  <span class="counter" id="counter">1 / 12</span>
+  <button id="next" aria-label="Next slide">Next ›</button>
+  <div class="prog"><i id="prog"></i></div>
+  <span class="hint">← → space · N notes · F fullscreen · ? keys</span>
 </footer>
-
-<div class="overlay" id="overlay" role="dialog" aria-label="Contents">
-  <button class="close" id="tocClose" type="button">Close</button>
-  <h2>Contents</h2>
-  <div id="tocList"></div>
 </div>
 
+<div class="help" id="help" hidden><div class="card"><h3>Keys</h3><dl>
+  <dt>→ / space</dt><dd>Next slide</dd><dt>←</dt><dd>Previous slide</dd><dt>Home / End</dt><dd>First / last slide</dd>
+  <dt>N</dt><dd>Speaker notes with timings</dd><dt>F</dt><dd>Fullscreen (desktop browsers)</dd><dt>?</dt><dd>This panel</dd><dt>Esc</dt><dd>Close</dd>
+</dl><p style="margin:12px 0 0"><button class="btn" id="help-close">Close</button></p></div></div>
 <script>
 (function(){
-"use strict";
-// ---------- reference data (mirrors the Lookups and Pathway map sheets) ----------
-var IMPACT=["1 Insignificant","2 Minor","3 Moderate","4 Major","5 Extreme"];
-var LIK=["1 Rare","2 Unlikely","3 Possible","4 Likely","5 Almost certain"];
-var LIKS=["Rare","Unlikely","Possible","Likely","Almost certain"];
-var EFF=["1 Fully effective","2 Mostly effective","3 Partially effective","4 Mostly ineffective","5 None or ineffective"];
-var EV=["Supported","Partially supported","Not verified"];
-var MOD=["None","Scale (more than 10,000 individuals)","Vulnerable group"];
-var BANDS=["Low","Medium","High"];
-var MATRIX=[["Low","Low","Low","Low","Low"],["Low","Low","Low","Medium","Medium"],["Low","Low","Medium","Medium","High"],["Medium","Medium","Medium","High","High"],["High","High","High","High","High"]];
-var REDUCTION=[[2,1,0],[1,1,0],[0,0,0],[0,0,0],[0,0,0]];
-var DC=[["Public or effectively de-identified information",1],["Basic contact information, mostly business contact details",2],["Ordinary personal information, policy and non-injury claims details",3],["Highly Confidential: banking, licence, SIN or health information, injury claims, underwriting or credit decisions",4],["Identity-takeover combination (SIN+DOB), biometrics, location data on at-risk individuals, criminal or immigration status, children’s data",5]];
-var RISKS=["1. Lawful basis / consent","2. Transparency","3. Over-collection","4. Secondary use","5. Unauthorized access / disclosure","6. Accuracy","7. Automated decisions / profiling","8. Security of processing","9. Retention and disposal","10. Individual rights","11. Cross-border / cross-province","12. Vendor and sub-processor","13. Re-identification"];
-var GROUPS=[
- ["1. Authority, transparency and appropriate processing",["Authority and consent validation","Privacy notices","Consent and preference enforcement","Purpose and secondary-use restrictions","Necessity and proportionality","PIAs and change approval gates"]],
- ["2. Data minimization, quality and lifecycle",["Collection minimization","Accuracy and correction","Retention","Secure disposal","De-identification and linkage restrictions","Non-production data protection"]],
- ["3. Access, disclosure and security",["Least-privilege access","Authentication and session protection","Disclosure and recipient verification","Secure transfer and encryption","Monitoring and containment","Segregation and export restrictions"]],
- ["4. Individual rights and consequential decisions",["Rights-request handling","Requester identity verification","Meaningful human review","Model and decision validation","Explanation, challenge and remedy"]],
- ["5. Vendors, transfers and incident response",["Vendor due diligence and assurance","Contractual processing restrictions","Sub-processor and transfer oversight","Vendor exit and deletion","Incident response and harm mitigation"]]
-];
-var GOV=["6. Privacy governance and accountability",["Accountable roles and oversight","Policies, standards and procedures","Training and awareness","Personnel confidentiality and safeguards","Processing inventories and data-flow records","Compliance monitoring and issue management"]];
-var MAP={
- "1. Lawful basis / consent":["Authority and consent validation","Privacy notices","Consent and preference enforcement","PIAs and change approval gates"],
- "2. Transparency":["Privacy notices","Consent and preference enforcement","Explanation, challenge and remedy"],
- "3. Over-collection":["Necessity and proportionality","Collection minimization","PIAs and change approval gates"],
- "4. Secondary use":["Authority and consent validation","Purpose and secondary-use restrictions","PIAs and change approval gates","De-identification and linkage restrictions","Segregation and export restrictions","Contractual processing restrictions"],
- "5. Unauthorized access / disclosure":["Least-privilege access","Authentication and session protection","Disclosure and recipient verification","Secure transfer and encryption","Monitoring and containment","Segregation and export restrictions","De-identification and linkage restrictions","Non-production data protection","Incident response and harm mitigation"],
- "6. Accuracy":["Accuracy and correction","Disclosure and recipient verification","Rights-request handling","Model and decision validation"],
- "7. Automated decisions / profiling":["Privacy notices","PIAs and change approval gates","Accuracy and correction","Meaningful human review","Model and decision validation","Explanation, challenge and remedy"],
- "8. Security of processing":["Least-privilege access","Authentication and session protection","Secure transfer and encryption","Monitoring and containment","Segregation and export restrictions","Non-production data protection","Vendor due diligence and assurance","Incident response and harm mitigation"],
- "9. Retention and disposal":["Retention","Secure disposal","De-identification and linkage restrictions","Vendor exit and deletion"],
- "10. Individual rights":["Consent and preference enforcement","Rights-request handling","Requester identity verification","Explanation, challenge and remedy","Contractual processing restrictions"],
- "11. Cross-border / cross-province":["PIAs and change approval gates","Segregation and export restrictions","Contractual processing restrictions","Sub-processor and transfer oversight"],
- "12. Vendor and sub-processor":["Vendor due diligence and assurance","Contractual processing restrictions","Sub-processor and transfer oversight","Vendor exit and deletion","Incident response and harm mitigation"],
- "13. Re-identification":["Purpose and secondary-use restrictions","De-identification and linkage restrictions","Non-production data protection","Segregation and export restrictions","Contractual processing restrictions"]
-};
-var DECISION={Low:["Acceptable; proceed once gates are met","Privacy Analyst","On change, or every 36 months"],Medium:["Acceptable with Privacy Office recommendations","Privacy Analyst","On change, or 24 months"],High:["Acceptable with formal acceptance of actions by the Contract/System Owner with Privacy concurrence","Manager, Privacy","On change, or 12 months"]};
-
-function $(id){return document.getElementById(id);}
-function el(tag,cls,html){var e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e;}
-function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
-function store(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
-function load(k,d){try{var v=localStorage.getItem(k);return v==null?d:JSON.parse(v);}catch(e){return d;}}
-
-// ---------- the rule (mirrors the workbook formulas) ----------
-function stepUp(b){return BANDS[Math.min(2,BANDS.indexOf(b)+1)];}
-function minBand(a,b){return BANDS[Math.min(BANDS.indexOf(a),BANDS.indexOf(b))];}
-function mapCheck(risk,ctl){
-  if(!ctl)return{ok:false,msg:"No control named"};
-  if(GOV[1].indexOf(ctl)>=0)return{ok:false,msg:"No: governance control, supports but earns no reduction"};
-  var inCat=GROUPS.some(function(g){return g[1].indexOf(ctl)>=0;});
-  if(!inCat)return{ok:false,msg:"No: control not in the catalogue, no reduction"};
-  if((MAP[risk]||[]).indexOf(ctl)>=0)return{ok:true,msg:"Yes"};
-  return{ok:false,msg:"No: not on the pathway map for this risk, no reduction"};
-}
-function rule(i){
-  var r={};
-  r.inh=MATRIX[i.imp-1][i.lik-1];
-  r.inhMod=i.mod?stepUp(r.inh):r.inh;
-  r.map=mapCheck(i.risk,i.ctl);
-  r.red=r.map.ok?REDUCTION[i.eff-1][i.ev]:0;
-  r.resLik=Math.max(1,i.lik-r.red);
-  r.res=MATRIX[i.imp-1][r.resLik-1];
-  r.resMod=i.mod?stepUp(r.res):r.res;
-  r.final=minBand(r.inhMod,r.resMod);
-  r.erm=r.final==="Low"?(i.imp===1?1:2):r.final==="Medium"?3:(i.imp===5?5:4);
-  r.below=i.minImp&&i.imp<i.minImp;
-  return r;
-}
-window.__rule=rule;
-
-// ---------- slides ----------
-var slides=Array.prototype.slice.call(document.querySelectorAll(".slide"));
-var N=slides.length,cur=0,seen=load("prr.seen",{});
-var stage=$("stage");
-function idx(id){for(var k=0;k<N;k++)if(slides[k].id===id)return k;return -1;}
-function show(n,noHash){
-  n=Math.max(0,Math.min(N-1,n));cur=n;
-  slides.forEach(function(s,k){s.classList.toggle("on",k===n);});
-  stage.scrollTop=0;
-  seen[slides[n].id]=true;store("prr.seen",seen);
-  var nseen=Object.keys(seen).filter(function(k){return seen[k]&&idx(k)>=0;}).length;
-  $("count").textContent="Slide "+(n+1)+" of "+N+" · "+nseen+" viewed";
-  $("barfill").style.width=(100*(n+1)/N)+"%";
-  $("prevA").disabled=$("prevB").disabled=(n===0);
-  $("nextA").disabled=$("nextB").disabled=(n===N-1);
-  if(!noHash){try{history.replaceState(null,"","#"+slides[n].id);}catch(e){}}
-  store("prr.cur",slides[n].id);
-}
-function next(){show(cur+1);} function prev(){show(cur-1);}
-$("nextA").addEventListener("click",next);$("nextB").addEventListener("click",next);
-$("prevA").addEventListener("click",prev);$("prevB").addEventListener("click",prev);
-document.addEventListener("keydown",function(e){
-  var t=e.target.tagName;if(t==="INPUT"||t==="SELECT"||t==="TEXTAREA")return;
-  if($("overlay").classList.contains("on")){if(e.key==="Escape")closeToc();return;}
-  if(e.key==="ArrowRight"||e.key==="PageDown"||e.key===" "){e.preventDefault();next();}
-  else if(e.key==="ArrowLeft"||e.key==="PageUp"){e.preventDefault();prev();}
-  else if(e.key==="Home"){show(0);}else if(e.key==="End"){show(N-1);}
-});
-window.addEventListener("hashchange",function(){var k=idx(location.hash.slice(1));if(k>=0)show(k,true);});
-
-// contents overlay
-var toc=$("tocList"),lastPart="",grid=null;
-slides.forEach(function(s,k){
-  var part=s.getAttribute("data-part");
-  if(part&&part!==lastPart){toc.appendChild(el("div","part",part));grid=el("div","grid");toc.appendChild(grid);lastPart=part;}
-  var b=el("button",null,(k+1)+". "+esc(s.getAttribute("data-title")));b.type="button";b.setAttribute("data-k",k);
-  b.addEventListener("click",function(){closeToc();show(k);});grid.appendChild(b);
-});
-function openToc(){Array.prototype.forEach.call(toc.querySelectorAll("button"),function(b){var k=+b.getAttribute("data-k");b.classList.toggle("seen",!!seen[slides[k].id]);b.classList.toggle("cur",k===cur);});$("overlay").classList.add("on");}
-function closeToc(){$("overlay").classList.remove("on");}
-$("toc").addEventListener("click",openToc);$("tocClose").addEventListener("click",closeToc);
-
-// ---------- process strip ----------
-var STEPS=[["1","Confirm scope","Purpose, data, people, flows",""],["2","Identify risks","One row per distinct risk",""],["3 · you score","Assess inherent risk","Impact and likelihood","you"],["4 · you score","Evaluate controls","Effectiveness and evidence","you"],["5 · the rule","Determine residual risk","Calculated, not judged","rule-step"],["6","Decide and approve","Treat, accept, avoid, escalate",""],["7","Monitor and reassess","On change or on cycle",""]];
-var STEPTXT=["Document the purpose, personal information, affected individuals, data flows, jurisdictions, technology, vendors and lifecycle. Set the PIA data class and modifier here.","Convert material facts and gaps into distinct privacy risk events. Separate risks where the cause, affected group, control or consequence differs.","Score impact and likelihood for each risk before considering controls. These are inputs 1 and 2 of the rule.","Confirm that each control addresses the specific risk pathway. Rate its effectiveness and classify the evidence. These are inputs 3 and 4 of the rule.","The workbook applies the seven steps of the rule. Nobody types a residual rating; the analyst checks the flags and writes the rationale.","Treat, accept, avoid or escalate. Assign actions, owners and due dates and obtain the approval the decision table requires.","Record the review cycle and reassess when a mandatory trigger occurs or the cycle ends."];
-var strip=$("strip");
-STEPS.forEach(function(s,i){
-  var d=el("div","step "+s[3],'<div class="n">'+esc(s[0])+'</div><b>'+esc(s[1])+'</b><span class="muted">'+esc(s[2])+'</span>');
-  d.addEventListener("click",function(){Array.prototype.forEach.call(strip.children,function(c){c.classList.remove("open");});d.classList.add("open");$("stepinfo").innerHTML="<b>Step "+(i+1)+": "+esc(s[1])+".</b> "+esc(STEPTXT[i]);});
-  strip.appendChild(d);
-});
-
-// ---------- sentence builder ----------
-function sentence(){
-  function g(id,ph){var v=$(id).value.trim();return v?esc(v):'<em>['+ph+']</em>';}
-  $("sentence").innerHTML="Because "+g("b1","cause")+", "+g("b2","event")+" may occur, affecting "+g("b3","individuals")+" and causing "+g("b4","harm")+".";
-}
-["b1","b2","b3","b4"].forEach(function(id){$(id).addEventListener("input",sentence);});
-sentence();
-
-// ---------- pathway explorer ----------
-var pmRisk=$("pm-risk");
-RISKS.forEach(function(r){var o=el("option",null,esc(r));o.value=r;pmRisk.appendChild(o);});
-function renderPM(){
-  var risk=pmRisk.value,out=$("pm-out");out.innerHTML="";
-  GROUPS.forEach(function(g){
-    var cg=el("div","cg",'<h4>'+esc(g[0])+'</h4>');var ch=el("div","chips");
-    g[1].forEach(function(c){var on=MAP[risk].indexOf(c)>=0;ch.appendChild(el("span","chip"+(on?" on":""),(on?"✓ ":"")+esc(c)));});
-    cg.appendChild(ch);out.appendChild(cg);
+  var slides=[].slice.call(document.querySelectorAll('.slide'));
+  var ids=slides.map(function(s){return s.id});
+  var cur=0;
+  var sectionOf={title:'title',agenda:'title',problem:'title',prioritize:'prioritize','prioritize-screens':'prioritize',rules:'prioritize','rules-list':'prioritize',limits:'prioritize',summarize:'summarize',find:'find','rules-of-use':'rules-of-use',discoverable:'rules-of-use',start:'rules-of-use',appendix:'appendix'};
+  var notes={
+    title:['Welcome. 15 minutes, one Monday morning, three jobs. Everything shown today runs in a seeded demo mailbox; nothing is a real matter.','Ask for a show of hands: who has pressed the Copilot button in Outlook this month? That tells you how slowly to click.'],
+    agenda:['The mental model: an assistant who has read every email you have, and has no legal judgment. Three jobs follow from that.','Promise the room one thing: every job ends with a prompt they can copy.'],
+    problem:['Keep this to a minute. The point is the buried request, not volume. Pick the example closest to something this team has lived through.'],
+    prioritize:['Demo, slowly. Toggle Prioritize on. Read two reasons aloud. Filter to High. Open the regulator email and read the reasoning box.','Say: nothing moved. The inbox is the same inbox with markers on it.','Timing: 2:00 to 5:00 covers this slide and the next three.'],
+    'prioritize-screens':['Use this slide only if the live demo fails or the room asks where a button lives. Three places: the menu, the reading pane, the filter.','The menu has four items in this firm\'s build: Summarize, Summarize and Reply, List email takeaways, Prioritize. Settings for Prioritize live under the gear icon, not in this menu.','Replace the recreations with screenshots from your tenant if the UI has moved.'],
+    rules:['Show Settings, Copilot, Prioritize. Point out the phrase style: "It\'s from…", "mentions…".','Say: rules apply to new mail only. Changing them does not re-rank what is already in the inbox.'],
+    'rules-list':['Paste the eight rules, or copy all with one button. Replace the generic names with your real regulators and law firms.','Suggest the one-week tune-up; it is the habit that makes the ranking trustworthy.'],
+    limits:['The planted email. Ask the room: who would have opened "Quick question" first? Then read what it actually says.','Land the line: Copilot sorts, you judge.'],
+    summarize:['Press Summary by Copilot, then Summarize a file, then Spot-check. Make the spot-check visible: find 13 November in the letter on screen.','If the room asks: Summarize and Reply drafts a response after summarizing. Do not demo it here; Job 2 is reading, not drafting. List email takeaways is the one to show if time allows.','Say: a summary is not the document. This habit is the whole point of the segment.'],
+    find:['Run prompt 1, let the table appear, then prompt 2. Point at the one it missed and read the caveat.','Mention that Copilot can flag or pin the results when asked in plain English, then move on; do not demo it.'],
+    'rules-of-use':['This is the slide the room is silently waiting for. Boundary, source, records. Confirm points 1 and 3 with IT and IG beforehand and say that you did.'],
+    discoverable:['Walk the four steps on the left slowly; most of the room assumes a chat is ephemeral. The point of step 4 is that the user\'s delete button does not delete the record.','On the right, stop on privilege: it is claimed item by item, so the habit is to keep prompts clean. Confirm the tenant specifics with IT and IG before you present.'],
+    start:['One habit, five prompts, named helpers. Leave the prompt card on screen for photographs. Open for questions.'],
+    appendix:['Not for presenting. Work through the checklist the week before; ticks are saved in this browser only.']
+  };
+  var $=function(id){return document.getElementById(id)};
+  function render(){
+    slides.forEach(function(s,i){s.classList.toggle('active',i===cur)});
+    $('counter').textContent=(cur+1)+' / '+slides.length;
+    $('prog').style.width=((cur+1)/slides.length*100)+'%';
+    var sec=sectionOf[ids[cur]];
+    [].forEach.call(document.querySelectorAll('#tracker button'),function(b){b.classList.toggle('on',b.getAttribute('data-go')===sec)});
+    var body=$('notes-body');body.innerHTML='';
+    var t=document.createElement('p');t.className='t';t.textContent='Slide '+(cur+1)+' · '+(slides[cur].getAttribute('data-time')||'');body.appendChild(t);
+    (notes[ids[cur]]||['No notes.']).forEach(function(n){var p=document.createElement('p');p.textContent=n;body.appendChild(p)});
+    $('prev').disabled=cur===0;$('next').disabled=cur===slides.length-1;
+    if(location.hash!=='#'+ids[cur]){try{history.replaceState(null,'','#'+ids[cur])}catch(e){}}
+  }
+  function go(n){cur=Math.max(0,Math.min(slides.length-1,n));render()}
+  function goId(id){var i=ids.indexOf(id);if(i>=0)go(i)}
+  $('prev').addEventListener('click',function(){go(cur-1)});
+  $('next').addEventListener('click',function(){go(cur+1)});
+  [].forEach.call(document.querySelectorAll('#tracker button'),function(b){b.addEventListener('click',function(){goId(b.getAttribute('data-go'))})});
+  window.addEventListener('hashchange',function(){var h=location.hash.replace('#','');if(ids.indexOf(h)>=0&&h!==ids[cur])goId(h)});
+  var notesOpen=false;
+  function toggleNotes(){notesOpen=!notesOpen;$('notes').hidden=!notesOpen;$('stagewrap').classList.toggle('notes-open',notesOpen);$('btn-notes').classList.toggle('on',notesOpen)}
+  $('btn-notes').addEventListener('click',toggleNotes);
+  function toggleHelp(force){var h=$('help');h.hidden=(force===undefined)?!h.hidden:!force}
+  $('btn-help').addEventListener('click',function(){toggleHelp()});
+  $('help-close').addEventListener('click',function(){toggleHelp(false)});
+  $('help').addEventListener('click',function(e){if(e.target===$('help'))toggleHelp(false)});
+  function fullscreen(){var el=document.documentElement;try{if(document.fullscreenElement){document.exitFullscreen&&document.exitFullscreen()}else if(el.requestFullscreen){var p=el.requestFullscreen();if(p&&p.catch)p.catch(function(){})}}catch(e){}}
+  $('btn-full').addEventListener('click',fullscreen);
+  document.addEventListener('keydown',function(e){
+    if(e.target&&(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'))return;
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();go(cur+1)}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(cur-1)}
+    else if(e.key==='Home'){go(0)}else if(e.key==='End'){go(slides.length-1)}
+    else if(e.key==='n'||e.key==='N'){toggleNotes()}
+    else if(e.key==='f'||e.key==='F'){fullscreen()}
+    else if(e.key==='?'){toggleHelp()}
+    else if(e.key==='Escape'){toggleHelp(false)}
   });
-  var cg=el("div","cg",'<h4>'+esc(GOV[0])+' · support only, no reduction</h4>');var ch=el("div","chips");
-  GOV[1].forEach(function(c){ch.appendChild(el("span","chip gov",esc(c)));});cg.appendChild(ch);out.appendChild(cg);
-  $("pm-count").textContent=MAP[risk].length+" of 28 pathway controls may earn a reduction for this risk.";
-}
-pmRisk.value=RISKS[4];pmRisk.addEventListener("change",renderPM);renderPM();
 
-// ---------- reduction table ----------
-var rt=$("red-tbl");
-EFF.forEach(function(e,i){var tr=el("tr");tr.appendChild(el("td",null,esc(e)));REDUCTION[i].forEach(function(v){tr.appendChild(el("td","c"+(v?" band-Low":""),v));});rt.appendChild(tr);});
-hoverTable(rt);
+  /* Copy buttons */
+  function copyText(text,btn){
+    var done=function(){btn.classList.add('done');var old=btn.textContent;btn.textContent='Copied';setTimeout(function(){btn.classList.remove('done');btn.textContent=old},1500)};
+    var fallback=function(){var span=btn.parentNode.querySelector('span,code');if(span&&window.getSelection){var r=document.createRange();r.selectNodeContents(span);var s=window.getSelection();s.removeAllRanges();s.addRange(r)}};
+    try{var p=navigator.clipboard&&navigator.clipboard.writeText(text);if(p&&p.then){p.then(done,fallback)}else{fallback()}}catch(e){fallback()}
+  }
+  [].forEach.call(document.querySelectorAll('.prompt .copy, .rule .copy'),function(b){b.addEventListener('click',function(){var t=b.parentNode.querySelector('span,code');copyText(t?t.textContent:'',b)})});
+  function copyAll(container,btn){var lines=[].map.call(container.querySelectorAll('span,code'),function(x){return x.textContent});copyText(lines.join('\n'),btn)}
+  $('rules-copy-all').addEventListener('click',function(){var lines=[].map.call(document.querySelectorAll('#rules-list-hi code, #rules-list-lo code'),function(x){return x.textContent});copyText(lines.join('\n'),$('rules-copy-all'))});
+  $('prompts-copy-all').addEventListener('click',function(){copyAll($('prompt-card'),$('prompts-copy-all'))});
 
-// ---------- matrix ----------
-var mt=$("matrix-tbl");
-(function(){var tr=el("tr");tr.appendChild(el("th",null,"Impact \\ Likelihood"));LIKS.forEach(function(l){tr.appendChild(el("th","c",esc(l)));});mt.appendChild(tr);
-for(var i=4;i>=0;i--){var r=el("tr");r.appendChild(el("td",null,esc(IMPACT[i])));for(var j=0;j<5;j++){r.appendChild(el("td","c band-"+MATRIX[i][j],MATRIX[i][j]));}mt.appendChild(r);}})();
-hoverTable(mt);
-function hoverTable(t){
-  t.addEventListener("mouseover",function(e){var td=e.target.closest("td");if(!td||td.cellIndex===0)return;clearHl(t);var tr=td.parentNode;tr.cells[0].classList.add("hl");t.rows[0].cells[td.cellIndex].classList.add("hl");td.classList.add("hl");});
-  t.addEventListener("mouseleave",function(){clearHl(t);});
-}
-function clearHl(t){Array.prototype.forEach.call(t.querySelectorAll(".hl"),function(x){x.classList.remove("hl");});}
-
-// ---------- calculator ----------
-function fill(sel,arr,vals){arr.forEach(function(a,i){var o=el("option",null,esc(a));o.value=vals?vals[i]:i;sel.appendChild(o);});}
-fill($("c-dc"),DC.map(function(d){return d[0];}),DC.map(function(d){return d[1];}));
-fill($("c-mod"),MOD);
-fill($("c-risk"),RISKS,RISKS);
-fill($("c-imp"),IMPACT,[1,2,3,4,5]);
-fill($("c-lik"),LIK,[1,2,3,4,5]);
-(function(){var s=$("c-ctl");var o=el("option",null,"— choose —");o.value="";s.appendChild(o);GROUPS.concat([GOV]).forEach(function(g){var og=el("optgroup");og.label=g[0];g[1].forEach(function(c){var x=el("option",null,esc(c));x.value=c;og.appendChild(x);});s.appendChild(og);});})();
-fill($("c-eff"),EFF,[1,2,3,4,5]);fill($("c-ev"),EV);
-(function(){var s=$("c-eff2");var o=el("option",null,"— not set —");o.value="";s.appendChild(o);})();fill($("c-eff2"),EFF,[1,2,3,4,5]);
-(function(){var s=$("c-ev2");var o=el("option",null,"— not set —");o.value="";s.appendChild(o);})();fill($("c-ev2"),EV);
-
-function pillB(b){return '<span class="pill band-'+b+'">'+b+'</span>';}
-function calc(){
-  var i={imp:+$("c-imp").value,lik:+$("c-lik").value,eff:+$("c-eff").value,ev:+$("c-ev").value,mod:$("c-mod").value!=="0",risk:$("c-risk").value,ctl:$("c-ctl").value,minImp:+$("c-dc").value};
-  var r=rule(i),modName=MOD[+$("c-mod").value];
-  var rows=[
-    ["Inherent band: "+IMPACT[i.imp-1].slice(2)+" x "+LIKS[i.lik-1],pillB(r.inh)],
-    [i.mod?"Modifier ("+modName.split(" (")[0]+"): up one step":"No modifier",pillB(r.inhMod)+' <span class="small muted">inherent</span>'],
-    ["Pathway check: "+(i.ctl?esc(i.ctl):"no control named")+" for "+esc(i.risk.replace(/^\d+\. /,"")),r.map.ok?'<span class="pill band-Low">Yes</span>':'<span class="pill band-High">'+esc(r.map.msg)+'</span>'],
-    ["Reduction table: "+EFF[i.eff-1].slice(2)+", "+EV[i.ev]+(r.map.ok?"":" (not eligible)"),"<b>"+r.red+"</b>"],
-    ["Residual likelihood: "+i.lik+" minus "+r.red+"; impact stays "+IMPACT[i.imp-1].slice(2),"<b>"+LIK[r.resLik-1]+"</b>"],
-    ["Residual band: "+IMPACT[i.imp-1].slice(2)+" x "+LIKS[r.resLik-1]+(i.mod?", then modifier":""),pillB(r.resMod)],
-    [r.resMod===r.final?r.final+" is not above the inherent band":"Capped at the inherent band",pillB(r.final)]
+  /* Inbox demo */
+  var mail=[
+    {id:'dana',from:'Dana Okafor · Treasury',ini:'DO',subj:'Quick question',prev:'Hi, can we settle the Astoria Holdings invoice through their new entity in Dubai instead? Finance wants…',cp:'Treasury asks whether an invoice can be paid via a new Dubai entity by 3pm today',pri:'normal',reason:'Internal message, no deadline stated, short request from a colleague.',time:'08:41',body:'Hi, can we settle the Astoria Holdings invoice through their new entity in Dubai instead? Finance wants to release by 3pm. Thanks!'},
+    {id:'digest',from:'Legal Weekly Digest',ini:'LD',ext:true,subj:'This week: sanctions updates, five cases to watch',prev:'Your Monday briefing on regulatory and case-law developments…',cp:'Newsletter: weekly round-up of legal and regulatory news',pri:'lo',reason:'Matches your rule: newsletter or legal news digest.',time:'08:33',body:'Your Monday briefing on regulatory and case-law developments across financial services…'},
+    {id:'reg',from:'Supervision Team · Regulator',ini:'ST',ext:true,subj:'Information request REF 26/0417 — response due 13 Nov',prev:'Dear Counsel, further to our supervisory review of 22 October we request the documents listed…',cp:'Regulator requests seven categories of documents from Legal by 13 November',pri:'hi',reason:"It's from an external regulator, it asks Legal to provide documents, and it sets a response deadline of 13 November. You are the only Legal recipient.",signals:'Signals: matches your rule "from a regulator"; explicit due date in subject and body; attachment; addressed to you.',time:'08:12',att:'Information_Request_26-0417.pdf',body:'Dear Counsel,\nFurther to our supervisory review of 22 October, we request the documents listed in the attached schedule. Please provide items 1 to 7 by 13 November 2026, or confirm in writing by 9 November if any item cannot be produced.'},
+    {id:'hart',from:'Hartwell & Co LLP',ini:'HC',ext:true,subj:'RE: Project Lantern — SPA redline v4',prev:'Attached is v4 with the seller’s comments accepted where agreed. We need your sign-off on the indemnity…',cp:'Outside counsel needs your comments on the SPA redline by Wednesday',pri:'hi',reason:'From external counsel, you are active in this thread, and it asks for your sign-off by Wednesday.',time:'07:58',att:'Lantern_SPA_v4_redline.docx',body:'Attached is v4 with the seller’s comments accepted where agreed. We need your sign-off on the indemnity cap by Wednesday to hold the signing date.'},
+    {id:'board',from:'Board Secretariat',ini:'BS',subj:'Board pack: papers due 18 Nov',prev:'Papers for the 25 November Board are due to the secretariat by close on 18 November…',cp:'Board papers for the 25 November meeting are due 18 November',pri:'hi',reason:'Matches your rule: from the Board secretariat. Mentions a due date.',time:'07:45',body:'Papers for the 25 November Board are due to the secretariat by close on 18 November. Legal has one item: the litigation update.'},
+    {id:'audit',from:'Internal Audit',ini:'IA',subj:'Outstanding: your response on finding IA-22',prev:'A reminder that management responses to finding IA-22 are due by 10 November…',cp:'Internal Audit is waiting for your response on finding IA-22, due 10 November',pri:'hi',reason:'From Internal Audit, explicit due date, addressed to you.',time:'07:30',body:'A reminder that management responses to finding IA-22 (contract approval evidence) are due by 10 November.'},
+    {id:'marcus',from:'Marcus Lee · Product',ini:'ML',subj:'Need Legal view: Q1 campaign claims',prev:'Before we lock creative for the 1 December launch, can Legal confirm the "lowest fees guaranteed" claim…',cp:'Product asks for a legal opinion on marketing claims before the 1 December launch',pri:'hi',reason:'Asks for a legal opinion. Mentions a launch date.',time:'Sun 18:20',body:'Before we lock creative for the 1 December launch, can Legal confirm the "lowest fees guaranteed" claim is OK to run?'},
+    {id:'vendor',from:'ContractVault',ini:'CV',ext:true,subj:'Webinar: AI in contract review',prev:'Join our 30-minute session on Thursday…',cp:'Vendor webinar invitation',pri:'lo',reason:'Matches your rule: vendor webinar or marketing email.',time:'Sun 16:05',body:'Join our 30-minute session on Thursday to see how teams are cutting review time…'},
+    {id:'priya',from:'Priya Nair · Compliance',ini:'PN',subj:'FYI: hotline stats Q3 (and one question)',prev:'Q3 whistleblowing hotline figures attached for info. Separately, could I have your view on how long…',cp:'Q3 hotline statistics for information; asks your view on record retention',pri:'normal',reason:'Internal FYI. A question is included but no deadline is stated.',time:'Sun 11:10',body:'Q3 whistleblowing hotline figures attached for info. Separately, could I have your view on how long we should keep closed hotline case files? By the end of next week would be great.'},
+    {id:'cal',from:'Exec Assistant',ini:'EA',subj:'Reschedule: Compliance Committee → Thursday',prev:'The Compliance Committee moves from Tuesday to Thursday 14:00…',cp:null,pri:'na',reason:'Not evaluated: meeting mail is excluded from prioritization.',time:'Sat 09:02',body:'The Compliance Committee moves from Tuesday to Thursday 14:00. Please accept the updated invitation.'},
+    {id:'hr',from:'HR',ini:'HR',subj:'Policy refresh: travel & expenses',prev:'The updated travel and expenses policy takes effect 1 December. No action required…',cp:'HR policy update for all staff; no action required',pri:'normal',reason:'All-staff update. No action requested.',time:'Fri 17:40',body:'The updated travel and expenses policy takes effect 1 December. No action required.'},
+    {id:'fac',from:'Facilities',ini:'FA',subj:'Lift maintenance Saturday',prev:'Lifts in the north core are out of service Saturday 08:00 to 14:00…',cp:'Building notice: lift maintenance Saturday',pri:'lo',reason:'Matches: general update.',time:'Fri 16:15',body:'Lifts in the north core are out of service Saturday 08:00 to 14:00.'}
   ];
-  var ol=$("c-steps");ol.innerHTML="";rows.forEach(function(x,k){ol.appendChild(el("li",null,'<span class="n">'+(k+1)+'</span><span>'+x[0]+'</span><span class="r">'+x[1]+'</span>'));});
-  var d=DECISION[r.final];
-  var html='<div class="big"><div class="k">Residual band</div><div class="v">'+pillB(r.final)+'</div></div><div class="big"><div class="k">ERM level</div><div class="v">'+r.erm+'</div></div><div class="big"><div class="k">Who signs · review</div><div class="v" style="font-size:16px;margin-top:6px">'+esc(d[1])+'<br><span class="muted" style="font-weight:400">'+esc(d[2])+'</span></div></div>';
-  var e2=$("c-eff2").value,v2=$("c-ev2").value;
-  if(e2!==""&&v2!==""){var r2=rule({imp:i.imp,lik:i.lik,eff:+e2,ev:+v2,mod:i.mod,risk:i.risk,ctl:i.ctl,minImp:i.minImp});html+='<div class="big"><div class="k">Expected after actions</div><div class="v">'+pillB(r2.final)+'</div></div>';}
-  $("c-result").innerHTML=html;
-  var f="";
-  if(r.below)f+='<div class="flag">Inherent impact is below the data-class minimum ('+IMPACT[i.minImp-1]+'). Allowed, but the rationale must say why the harm is not exposure of that data.</div>';
-  if(!r.map.ok&&i.ctl)f+='<div class="flag bad">'+esc(r.map.msg)+'. Check the control you chose; do not change the risk category to make it fit.</div>';
-  if(r.map.ok&&r.red===0)f+='<div class="flag">The control is eligible but earns no reduction at this effectiveness and evidence. Record the fix as an action; it will show in the expected rating.</div>';
-  if(i.mod&&r.final==="High"&&r.res!=="High")f+='<div class="flag ok">The modifier lifted this band to High. That is the confirmed policy for large or vulnerable-group processing; the controls drive the action list.</div>';
-  $("c-flags").innerHTML=f;
-  var m=$("c-mini");m.innerHTML="";var tr=el("tr");tr.appendChild(el("th",null,"Impact \\ Likelihood"));LIKS.forEach(function(l){tr.appendChild(el("th",null,esc(l)));});m.appendChild(tr);
-  for(var a=4;a>=0;a--){var row=el("tr");row.appendChild(el("td",null,esc(IMPACT[a])));for(var b=0;b<5;b++){var td=el("td","band-"+MATRIX[a][b]+" mark",MATRIX[a][b]);if(a===i.imp-1&&b===i.lik-1)td.innerHTML+='<b class="tag">I</b>';if(a===i.imp-1&&b===r.resLik-1)td.innerHTML+='<b class="tag r">R</b>';row.appendChild(td);}m.appendChild(row);}
-}
-["c-dc","c-mod","c-risk","c-imp","c-lik","c-ctl","c-eff","c-ev","c-eff2","c-ev2"].forEach(function(id){$(id).addEventListener("change",calc);});
-function setCalc(v){$("c-dc").value=v.dc;$("c-mod").value=v.mod;$("c-risk").value=v.risk;$("c-imp").value=v.imp;$("c-lik").value=v.lik;$("c-ctl").value=v.ctl;$("c-eff").value=v.eff;$("c-ev").value=v.ev;$("c-eff2").value=v.eff2;$("c-ev2").value=v.ev2;calc();}
-$("ex1").addEventListener("click",function(){setCalc({dc:4,mod:0,risk:RISKS[4],imp:4,lik:4,ctl:"Least-privilege access",eff:2,ev:0,eff2:1,ev2:0});});
-$("ex2").addEventListener("click",function(){setCalc({dc:4,mod:1,risk:RISKS[11],imp:3,lik:3,ctl:"Contractual processing restrictions",eff:5,ev:2,eff2:1,ev2:0});});
-$("exreset").addEventListener("click",function(){setCalc({dc:3,mod:0,risk:RISKS[4],imp:3,lik:3,ctl:"",eff:3,ev:2,eff2:"",ev2:""});});
-setCalc({dc:4,mod:0,risk:RISKS[4],imp:4,lik:4,ctl:"Least-privilege access",eff:2,ev:0,eff2:"",ev2:""});
+  var st={on:false,filter:'all',sel:null,more:false};
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function renderInbox(){
+    var list=$('inbox-msgs');var html='';
+    mail.forEach(function(m){
+      if(st.on&&st.filter==='hi'&&m.pri!=='hi')return;
+      var mark='';if(st.on){if(m.pri==='hi')mark='<span class="pri hi">↑</span>';else if(m.pri==='lo')mark='<span class="pri lo">↓</span>'}
+      var prev=(st.on&&m.cp)?'<div class="prev cp">'+esc(m.cp)+'</div>':'<div class="prev">'+esc(m.prev)+'</div>';
+      html+='<div class="msg'+(st.sel===m.id?' sel':'')+'" data-id="'+m.id+'" role="button" tabindex="0"><div class="av'+(m.ext?' ext':'')+'">'+m.ini+'</div><div style="min-width:0"><div class="from">'+mark+'<span>'+esc(m.from)+'</span></div><div class="subj">'+esc(m.subj)+'</div>'+prev+'</div><div class="time">'+esc(m.time)+'</div></div>';
+    });
+    if(!html)html='<div style="padding:1em;color:var(--ol-muted)">No high priority mail yet. New mail is ranked as it arrives.</div>';
+    list.innerHTML=html;
+    [].forEach.call(list.querySelectorAll('.msg'),function(el){var h=function(){st.sel=el.getAttribute('data-id');st.more=false;renderInbox()};el.addEventListener('click',h);el.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();h()}})});
+    $('inbox-filter-label').textContent=(st.on&&st.filter==='hi')?'Filter: High priority ▾':'Filter ▾';
+    var read=$('inbox-read');var m=null;mail.forEach(function(x){if(x.id===st.sel)m=x});
+    if(!m){read.innerHTML='<div style="color:var(--ol-muted);padding:1em 0">Select a message to read it.'+(st.on?'':' Then turn Prioritize on.')+'</div>';return}
+    var mark=(st.on&&m.pri==='hi')?'<span class="pri hi">↑</span> ':'';
+    var box='';
+    if(st.on){
+      var label=m.pri==='hi'?'Why this is high priority':m.pri==='lo'?'Low priority':m.pri==='na'?'Not evaluated':'Normal priority';
+      box='<div class="cpbox"><div class="h"><span class="sp">✦</span> '+label+'</div>'+esc(m.reason)+(m.signals?' <span class="more" id="cp-more">'+(st.more?'Show less':'Show more')+'</span>'+(st.more?'<div style="margin-top:.4em;color:var(--ol-muted)">'+esc(m.signals)+'</div>':''):'')+'</div>';
+    }
+    read.innerHTML='<h4>'+mark+esc(m.subj)+'</h4><div class="meta">'+esc(m.from)+' · '+esc(m.time)+' · to you</div>'+box+(m.att?'<div><span class="att">📎 '+esc(m.att)+'</span></div>':'')+'<div class="body">'+esc(m.body)+'</div>'+(m.id==='dana'&&st.on?'<div class="callout hi" style="font-family:var(--font-body)"><b>The trap.</b> Ranked Normal by signals; a sanctions and KYC question by content. Copilot sorts, you judge.</div>':'');
+    var more=$('cp-more');if(more)more.addEventListener('click',function(){st.more=!st.more;renderInbox()});
+  }
+  $('pri-toggle').addEventListener('click',function(){st.on=!st.on;if(!st.on)st.filter='all';$('pri-toggle').innerHTML='Prioritize by Copilot: <b>'+(st.on?'On':'Off')+'</b>';$('pri-toggle').classList.toggle('on',st.on);$('pri-filter').disabled=!st.on;$('pri-filter').textContent='Filter: '+(st.filter==='hi'?'High priority':'All mail');renderInbox()});
+  $('pri-filter').addEventListener('click',function(){st.filter=st.filter==='hi'?'all':'hi';$('pri-filter').textContent='Filter: '+(st.filter==='hi'?'High priority':'All mail');$('pri-filter').classList.toggle('on',st.filter==='hi');renderInbox()});
+  renderInbox();
 
-// ---------- checklist ----------
-var CHK=["Every risk statement names a cause, an event, the people affected and a harm","Facts are separated from assumptions, and each assumption is written down","Every control named is on the pathway map for its risk (column K says Yes)","Every Supported or Partially supported status has an evidence reference with a date","Every row flagged below the data-class minimum says in its rationale why the harm is not exposure","Conflicts between the questionnaires are listed, with the higher credible reading used","Open gates are named in the summary, and the TPRM rating is within one band or explained","Every action has an owner and a due date, and no grey cell has been typed over"];
-var chk=load("prr.chk",{}),cw=$("checks");
-CHK.forEach(function(t,i){var l=el("label",chk[i]?"done":"");var c=el("input");c.type="checkbox";c.checked=!!chk[i];c.addEventListener("change",function(){chk[i]=c.checked;l.classList.toggle("done",c.checked);store("prr.chk",chk);});l.appendChild(c);l.appendChild(el("span",null,esc(t)));cw.appendChild(l);});
-
-// ---------- quiz ----------
-var QUIZ=[
- {q:"The vendor's questionnaire says MFA is in place. Nothing else has been provided. What is the evidence status?",o:["Supported","Partially supported","Not verified"],a:2,w:"A questionnaire answer or attestation on its own is always Not verified. Ask for configuration evidence or an audit result."},
- {q:"A control is Fully effective and its evidence is Partially supported. What reduction does it earn?",o:["0","1","2"],a:1,w:"The reduction is the lower of what effectiveness and evidence earn. Fully effective could earn 2, but Partially supported evidence limits it to 1."},
- {q:"Inherent impact is Major. After the reduction, residual likelihood is Unlikely. No modifier. What is the residual band?",o:["Low","Medium","High"],a:1,w:"Read the Major row of the matrix: Rare, Unlikely and Possible are all Medium. A Major-impact risk can never reach Low."},
- {q:"A PIA has three Low risks and one High risk. What is the PIA rating?",o:["Low, because most risks are Low","Medium, the average","High"],a:2,w:"The PIA rating is the highest residual band across all risks. It is never averaged."},
- {q:"The Scale modifier applies. The residual band from the matrix is Medium and the inherent band (with modifier) is High. What is the final band?",o:["Medium","High","Low"],a:1,w:"The modifier is applied at the residual stage too, lifting Medium to High. High is not above the inherent band, so it stands."},
- {q:"For risk 5 (unauthorized access) the analyst names \"Training and awareness\" as the control relied on, Fully effective and Supported. What reduction does it earn?",o:["2","1","0"],a:2,w:"Training is a governance control. It supports every risk and can raise the effectiveness of a specific control, but earns no reduction on its own."},
- {q:"A signed contract clause requires quarterly access reviews, but no review has run yet. What is the evidence status for the access-review control?",o:["Supported","Partially supported","Not verified"],a:1,w:"A signed clause is design evidence. Without operating evidence (a completed review), the status is Partially supported."}
-];
-function renderQuiz(){
-  var out=$("quiz-out");out.innerHTML="";var score=0,done=0;
-  QUIZ.forEach(function(q,qi){
-    var d=el("div","q",'<b>'+(qi+1)+'. '+esc(q.q)+'</b>');var opts=el("div","opts");
-    q.o.forEach(function(o,oi){var b=el("button",null,esc(o));b.type="button";b.addEventListener("click",function(){if(d.classList.contains("answered"))return;d.classList.add("answered");done++;if(oi===q.a){b.classList.add("right");score++;}else{b.classList.add("wrong");opts.children[q.a].classList.add("right");}
-      if(done===QUIZ.length){out.appendChild(el("p","score","You scored "+score+" of "+QUIZ.length+"."+(score===QUIZ.length?" All correct.":score>=5?" Re-read the slides for the ones you missed.":" Work through Parts 2 and 3 again, then retry.")));}});opts.appendChild(b);});
-    d.appendChild(opts);d.appendChild(el("div","why",esc(q.w)));out.appendChild(d);
+  /* Summarize demo */
+  $('sum-thread').addEventListener('click',function(){
+    $('sum-out').innerHTML='<div class="cpbox"><div class="h"><span class="sp">✦</span> Summary by Copilot</div><ol>'+
+      '<li>The regulator requested seven categories of documents following its supervisory review of 22 October. <span class="cite">1</span></li>'+
+      '<li>Response due <span id="sum-date">13 November</span>; written confirmation by 9 November for any item that cannot be produced. <span class="cite">1</span></li>'+
+      '<li>Hartwell &amp; Co offered to prepare the privilege log and asked for your instruction by Thursday. <span class="cite">6</span></li>'+
+      '<li>Compliance holds items 4 and 5 and can produce them within five working days. <span class="cite">9</span></li>'+
+      '<li>Open point: whether item 7 (board minutes) is privileged. No one has taken a position. <span class="cite">12</span></li></ol></div>';
+    $('sum-thread').disabled=true;$('sum-file').disabled=false;
   });
-}
-renderQuiz();$("quiz-reset").addEventListener("click",renderQuiz);
+  $('sum-file').addEventListener('click',function(){
+    $('file-out').innerHTML='<div class="cpbox"><div class="h"><span class="sp">✦</span> Summary of Information_Request_26-0417.pdf</div>'+
+      '<b>Obligations</b>: produce schedule items 1–7 (policies, approval records, board minutes, correspondence); confirm in writing any item that cannot be produced.<br>'+
+      '<b>Dates</b>: 22 Oct (review), 9 Nov (written confirmation), 13 Nov (response due).<br>'+
+      '<b>Open questions</b>: scope of item 7; whether native files or PDFs are expected; whether privilege claims need a schedule.</div>';
+    $('sum-file').disabled=true;$('sum-check').disabled=false;
+  });
+  $('sum-check').addEventListener('click',function(){
+    var a=$('sum-date'),b=$('src-date');if(a)a.classList.add('hl');if(b){b.classList.add('hl');b.scrollIntoView({block:'nearest'})}
+    $('sum-check').disabled=true;$('sum-check').textContent='Matches the letter ✓';
+  });
 
-// ---------- start ----------
-var start=idx(location.hash.slice(1));
-if(start<0){var saved=load("prr.cur",null);start=saved?idx(saved):0;if(start<0)start=0;}
-show(start,true);
+  /* Chat demo */
+  var q1='List emails from the last two weeks where someone asked me for an opinion or advice and I haven’t replied.';
+  var q2='Which deadlines or deliverables are mentioned in my emails this month? Show sender, item, date.';
+  var t1='<p style="margin:0 0 .3em">I found five requests in your mailbox with no reply from you:</p><table><tr><th>Sender</th><th>Request</th><th>Received</th></tr>'+
+    '<tr><td>Marcus Lee, Product</td><td>Legal view on "lowest fees guaranteed" claim before 1 Dec launch</td><td>Sun 18:20</td></tr>'+
+    '<tr><td>Dana Okafor, Treasury</td><td>Whether the Astoria invoice can be paid via a new Dubai entity</td><td>Today 08:41</td></tr>'+
+    '<tr><td>Hartwell &amp; Co</td><td>Sign-off on the SPA indemnity cap (v4 redline)</td><td>Today 07:58</td></tr>'+
+    '<tr><td>Priya Nair, Compliance</td><td>View on retention period for closed hotline case files</td><td>Sun 11:10</td></tr>'+
+    '<tr><td>Tom Ashworth, Procurement</td><td>View on the liability cap in the Nimbus MSA</td><td>29 Oct</td></tr></table>';
+  var t2='<p style="margin:0 0 .3em">Deadlines and deliverables mentioned in your mail this month:</p><table><tr><th>Sender</th><th>Item</th><th>Date</th></tr>'+
+    '<tr><td>Supervision Team</td><td>Written confirmation for any item that cannot be produced</td><td>9 Nov</td></tr>'+
+    '<tr><td>Internal Audit</td><td>Management response to finding IA-22</td><td>10 Nov</td></tr>'+
+    '<tr><td>Hartwell &amp; Co</td><td>Sign-off on SPA indemnity cap</td><td>Wed 11 Nov</td></tr>'+
+    '<tr><td>Supervision Team</td><td>Information request REF 26/0417, items 1–7</td><td>13 Nov</td></tr>'+
+    '<tr><td>Board Secretariat</td><td>Litigation update for the Board pack</td><td>18 Nov</td></tr>'+
+    '<tr><td>Marcus Lee, Product</td><td>Q1 campaign launch</td><td>1 Dec</td></tr></table>'+
+    '<div class="callout" style="margin-top:.5em;font-family:var(--font-body)"><b>Presenter note:</b> not listed is Priya Nair’s "by the end of next week". A net, not a ledger.</div>';
+  function ask(q,answer,btn){
+    var log=$('chat-log');$('chat-box').textContent=q;
+    var u=document.createElement('div');u.className='u';u.textContent=q;log.appendChild(u);
+    var a=document.createElement('div');a.className='a';a.innerHTML='<span class="dots">Searching your mailbox…</span>';log.appendChild(a);log.scrollTop=log.scrollHeight;
+    btn.disabled=true;
+    setTimeout(function(){a.innerHTML=answer;log.scrollTop=log.scrollHeight;$('chat-box').textContent='Ask a question or make a request…'},800);
+  }
+  $('chat-q1').addEventListener('click',function(){ask(q1,t1,$('chat-q1'))});
+  $('chat-q2').addEventListener('click',function(){ask(q2,t2,$('chat-q2'))});
+  $('chat-reset').addEventListener('click',function(){$('chat-log').innerHTML='<div class="a">Ask me about your inbox and calendar. I only see mail in your own mailbox.</div>';$('chat-q1').disabled=false;$('chat-q2').disabled=false});
+
+  /* Readiness checklist, per device */
+  var KEY='copilot-inbox-readiness';
+  var boxes=[].slice.call(document.querySelectorAll('#readiness input'));
+  try{var saved=JSON.parse(localStorage.getItem(KEY)||'{}');boxes.forEach(function(b){if(saved[b.id])b.checked=true})}catch(e){}
+  boxes.forEach(function(b){b.addEventListener('change',function(){try{var o={};boxes.forEach(function(x){o[x.id]=x.checked});localStorage.setItem(KEY,JSON.stringify(o))}catch(e){}})});
+
+  var h=location.hash.replace('#','');if(ids.indexOf(h)>=0)cur=ids.indexOf(h);
+  render();
 })();
 </script>
-</body>
-</html>
